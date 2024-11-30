@@ -1,0 +1,47 @@
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:@(IsVisible ? "block" : "none"); background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Find by EČV</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ecv" class="form-label">EČV</label>
+                        <input type="text" class="form-control" id="ecv" @bind="Ecv" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="SubmitCustomer">Find</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@code {
+    [Parameter] public bool IsVisible { get; set; } = false;
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
+
+    [Parameter] public string Ecv { get; set; }
+
+    private void CloseDialog()
+    {
+        IsVisible = false;
+        if (OnClose.HasDelegate)
+        {
+            OnClose.InvokeAsync();
+        }
+    }
+
+    private void SubmitCustomer()
+    {
+        if (OnSubmit.HasDelegate)
+        {
+            OnSubmit.InvokeAsync();
+        }
+        CloseDialog();
+    }
+
+}
