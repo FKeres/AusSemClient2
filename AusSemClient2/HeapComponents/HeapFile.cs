@@ -159,6 +159,12 @@ class HeapFile<T> where T:IRecord<T>, new()
         }
     }
 
+    public void Update(long address, T item) {
+        T found = Get(address, item);
+        found.Update(item);
+        WriteBlock(address);
+    }
+
     private void CLearEnd() {
         long actualAddress = _fs.Position - _block.GetSize();
 

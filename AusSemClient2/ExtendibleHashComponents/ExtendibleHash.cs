@@ -95,8 +95,8 @@ class ExtendibleHash<T> where T : IExtendRec, IRecord<T>,  new()
             Insert(foundItem);
         } else {
             foundItem.Update(item);
+            _heapFile.WriteBlock(_blockProps[hashVal].Address);
         }
-
         
     }
 
