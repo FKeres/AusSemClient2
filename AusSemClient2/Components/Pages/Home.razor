@@ -1,7 +1,115 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Customer List</PageTitle>
 
-<h1>Hello, world!</h1>
+<h3>Customers and Service Visits</h3>
 
-Welcome to your new app.
+<button class="btn btn-primary" @onclick="ShowAddCustomerDialog">Add Customer</button>
+
+<div>
+    @if (_customers.Any())
+    {
+        <ul>
+            @foreach (var customer in _customers)
+            {
+                <li>
+                    <strong>@customer.Id @customer.Name @customer.LastName</strong>
+                    <ul>
+                        @if (customer.ServiceVisit.Any())
+                        {
+                            @for(int i = 0; i < customer.ValidServiceNum; ++i)
+                            {
+                                <li>
+                                    <strong>Date:</strong> @customer.ServiceVisit[i].Date <br />
+                                    <strong>Price:</strong> @customer.ServiceVisit[i].Price
+                                    @for(int j = 0; j < customer.ServiceVisit[i]._validDesc; ++j) {
+                                        <strong>Description @j:</strong> @customer.ServiceVisit[i].Description[j];
+                                    }
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No service visits available.</li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No customers available.</p>
+    }
+</div>
+
+@if (isAddDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Customer</h5>
+                    <button type="button" class="btn-close" @onclick="CloseAddCustomerDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="customerId" class="form-label">Customer ID</label>
+                        <input type="number" class="form-control" id="customerId" @bind="_id" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="ecv" class="form-label">EČV</label>
+                        <input type="text" class="form-control" id="ecv" @bind="_ecv" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="namr" class="form-label">Customer Name</label>
+                        <input type="text" class="form-control" id="name" @bind="_name" maxlength="15" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="namr" class="form-label">Customer Last Name</label>
+                        <input type="text" class="form-control" id="lastName" @bind="_lastName" maxlength="20" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseAddCustomerDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="AddCustomer">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    private List<Customer> _customers = new();
+    private bool isAddDialogVisible = false;
+
+    private int _id = 0;
+    private string _ecv = "";
+    private string _name = "";
+    private string _lastName = "";
+
+    public void AddCustomer() {
+
+
+        isAddDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowAddCustomerDialog()
+    {
+        _id = 0;
+        _ecv = "";
+        _name = "";
+        _lastName = "";
+        
+        isAddDialogVisible = true;
+        StateHasChanged();
+    }
+
+     void CloseAddCustomerDialog()
+    {
+        isAddDialogVisible = false;
+        StateHasChanged();
+    }
+}

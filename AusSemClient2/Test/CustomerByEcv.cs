@@ -108,4 +108,10 @@ class CustomerByEcv : IRecord<CustomerByEcv>, IExtendRec
         _ecv = _ecv != other.Ecv ? other.Ecv : _ecv;
         _address = _address != other.Address ? other.Address : _address;
     }
+
+    public void CopyFrom(CustomerByEcv other) {
+        _id = other.Id;
+        _ecv = other.Ecv;
+        _address = other.Address;
+    }
 }
