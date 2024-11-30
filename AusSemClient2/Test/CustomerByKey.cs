@@ -72,7 +72,7 @@ class CustomerByKey : IRecord<CustomerByKey>, IExtendRec
         }
     }
 
-    public bool Equals(CustomerByKey other)
+    public virtual bool Equals(CustomerByKey other)
     {
         throw new NotImplementedException();
     }
@@ -88,12 +88,12 @@ class CustomerByKey : IRecord<CustomerByKey>, IExtendRec
         _ecv = _ecv != other.Ecv ? other.Ecv : _ecv;
     }
 
-    public bool KeyUpdated(CustomerByKey other)
+    public virtual bool KeyUpdated(CustomerByKey other)
     {
         throw new NotImplementedException();
     }
 
-    public byte[] GetByteKey()
+    public virtual byte[] GetByteKey()
     {
         throw new NotImplementedException();
     }
