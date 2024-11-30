@@ -115,6 +115,11 @@ class Customer : IRecord<Customer>, IExtendRec
         size += sizeof(int);
         size += sizeof(int);
 
+        if (_ecv != null)
+        {
+            size +=  _maxEcvSize * sizeof(char);
+        }
+
         if (_name != null)
         {
             size +=  _maxNameSize * sizeof(char);
@@ -194,7 +199,9 @@ class Customer : IRecord<Customer>, IExtendRec
     }
 
     public void Update(Customer other)
-    {   _id = _id != other.Id ? other.Id : _id;
+    {   
+        _id = _id != other.Id ? other.Id : _id;
+        _ecv = _ecv != other.Ecv ? other.Ecv : _ecv;
         _name = _name != other.Name ? other.Name : _name;
         _lastName = _lastName != other.LastName ? other.LastName : _name;
         _validServiceNum = _validServiceNum != other.ValidServiceNum ? other.ValidServiceNum : _validServiceNum;
