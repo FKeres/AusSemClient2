@@ -81,6 +81,25 @@ class ExtendibleHash<T> where T : IExtendRec, IRecord<T>,  new()
         }
     }
 
+    public void Update(T item) {
+        byte[] byteKey = item.GetByteKey();
+        Array.Reverse(byteKey);
+
+        int hashVal = HashItem(byteKey, _actualDepth);
+
+        T foundItem = FindElementInBlock(_blockProps[hashVal].Address, item);
+        
+        if(foundItem.KeyUpdated(item)) {
+            //Remove(foundItem);
+            foundItem.Update(item);
+            Insert(foundItem);
+        } else {
+            foundItem.Update(item);
+        }
+
+        
+    }
+
     //actualizes validCount of blocks on provided indexes
     private void ActualizeValidCountToZero(int left, int right)
     {
