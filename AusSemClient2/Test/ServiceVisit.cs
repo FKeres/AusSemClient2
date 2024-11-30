@@ -134,4 +134,16 @@ class ServiceVisit : IRecord<ServiceVisit>
     {
         throw new NotImplementedException();
     }
+
+    public void CopyFrom(ServiceVisit other) {
+        _date = other.Date;
+        _id = other.Id;
+        _price = other.Price;
+
+        for (int i = 0; i < _description.Length; i++)
+        {
+            _description[i] = other.Description[i];
+        }
+
+    }
 }

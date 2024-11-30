@@ -106,4 +106,10 @@ class CustomerById : IRecord<CustomerById>, IExtendRec
     {
         return false;
     }
+
+    public void CopyFrom(CustomerById other) {
+        _id = other.Id;
+        _ecv = other.Ecv;
+        _address = other.Address;
+    }
 }

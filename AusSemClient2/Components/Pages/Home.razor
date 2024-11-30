@@ -1,10 +1,15 @@
 ﻿@page "/"
+@inject HomeService HomeService
+@rendermode InteractiveServer
+
 
 <PageTitle>Customer List</PageTitle>
 
 <h3>Customers and Service Visits</h3>
 
 <button class="btn btn-primary" @onclick="ShowAddCustomerDialog">Add Customer</button>
+<button class="btn btn-info" @onclick="ShowFindByIdDialog">Find by ID</button>
+<button class="btn btn-info" @onclick="ShowFindByEcvDialog">Find by EČV</button>
 
 <div>
     @if (_customers.Any())
@@ -13,7 +18,7 @@
             @foreach (var customer in _customers)
             {
                 <li>
-                    <strong>@customer.Id @customer.Name @customer.LastName</strong>
+                    <strong>@customer.Id @customer.Ecv @customer.Name @customer.LastName</strong>
                     <ul>
                         @if (customer.ServiceVisit.Any())
                         {
@@ -43,46 +48,33 @@
     }
 </div>
 
-@if (isAddDialogVisible)
-{
-    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Customer</h5>
-                    <button type="button" class="btn-close" @onclick="CloseAddCustomerDialog"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="customerId" class="form-label">Customer ID</label>
-                        <input type="number" class="form-control" id="customerId" @bind="_id" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="ecv" class="form-label">EČV</label>
-                        <input type="text" class="form-control" id="ecv" @bind="_ecv" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="namr" class="form-label">Customer Name</label>
-                        <input type="text" class="form-control" id="name" @bind="_name" maxlength="15" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="namr" class="form-label">Customer Last Name</label>
-                        <input type="text" class="form-control" id="lastName" @bind="_lastName" maxlength="20" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CloseAddCustomerDialog">Cancel</button>
-                    <button type="button" class="btn btn-primary" @onclick="AddCustomer">Add</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
+<AddDialog 
+    IsVisible="@isAddDialogVisible" 
+    CustomerId="@_id" 
+    Ecv="@_ecv" 
+    CustomerName="@_name" 
+    CustomerLastName="@_lastName"
+    OnClose="CloseAddCustomerDialog"
+    OnSubmit="AddCustomer" />
 
+<FindByIdDialog
+    IsVisible="@isFindByIdDialogVisible" 
+    CustomerId="@_id" 
+    OnClose="CloseFindByIdDialog"
+    OnSubmit="FindById" />
+
+<FindByEcvDialog
+    IsVisible="@isFindByEcvDialogVisible" 
+    CustomerId="@_ecv" 
+    OnClose="CloseFindByEcvDialog"
+    OnSubmit="FindByEcv" />
 
 @code {
     private List<Customer> _customers = new();
+
     private bool isAddDialogVisible = false;
+    private bool isFindByIdDialogVisible = false;
+    private bool isFindByEcvDialogVisible = false;
 
     private int _id = 0;
     private string _ecv = "";
@@ -90,9 +82,23 @@
     private string _lastName = "";
 
     public void AddCustomer() {
-
+        HomeService.Add(_id, _ecv, _name, _lastName);
 
         isAddDialogVisible = false;
+        StateHasChanged();
+    }
+
+    public void FindById() {
+        _customers.Add(HomeService.FindById(_id));
+
+        isFindByIdDialogVisible = true;
+        StateHasChanged();
+    }
+
+    public void FindByEcv() {
+        _customers.Add(HomeService.FindByEcv(_ecv));
+
+        isFindByEcvDialogVisible = true;
         StateHasChanged();
     }
 
@@ -102,7 +108,7 @@
         _ecv = "";
         _name = "";
         _lastName = "";
-        
+
         isAddDialogVisible = true;
         StateHasChanged();
     }
@@ -110,6 +116,34 @@
      void CloseAddCustomerDialog()
     {
         isAddDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowFindByIdDialog()
+    {
+        _id = 0;
+
+        isFindByIdDialogVisible = true;
+        StateHasChanged();
+    }
+
+     void CloseFindByIdDialog()
+    {
+        isFindByIdDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void ShowFindByEcvDialog()
+    {
+        _ecv = "";
+
+        isFindByEcvDialogVisible = true;
+        StateHasChanged();
+    }
+
+     void CloseFindByEcvDialog()
+    {
+        isFindByEcvDialogVisible = true;
         StateHasChanged();
     }
 }

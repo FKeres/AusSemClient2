@@ -82,18 +82,7 @@ class Customer : IRecord<Customer>, IExtendRec
 
     public bool Equals(Customer other)
     {
-
-        if(_id == other.Id) {
-            for(int i = 0; i < _serviceVisit.Length; ++i)
-            {
-                if(!_serviceVisit[i].Equals(other.ServiceVisit[i])) {
-                    return false;
-                }
-            }
-            return true;
-        } 
-        
-        return false;
+        return _id == other.Id && _ecv == other.Ecv ;
     }
 
     public Customer CreateInstance()
@@ -215,5 +204,18 @@ class Customer : IRecord<Customer>, IExtendRec
     public bool KeyUpdated(Customer other)
     {
         throw new NotImplementedException();
+    }
+
+    public void CopyFrom(Customer other) {
+        _id = other.Id;
+        _ecv = other.Ecv;
+        _name = other.Name;
+        _lastName = other.LastName;
+        _validServiceNum = other.ValidServiceNum;
+
+        for (int i = 0; i < _serviceVisit.Length; i++)
+        {
+            _serviceVisit[i].CopyFrom(other.ServiceVisit[i]);
+        }
     }
 }
