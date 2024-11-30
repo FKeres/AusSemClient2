@@ -50,12 +50,14 @@ class TestExtend
                 numbers.RemoveAt(index);
 
                 Customer customer = GenerateCustomer(id);
-                Customer customerInList = new Customer(customer.Id, customer.Name, customer.LastName);
+                Customer customerInList = new Customer(customer.Id, "xxxxxxxxxx", customer.Name, customer.LastName);
 
                 for(int x = 0; x < customerInList.ServiceVisit.Length; ++x) {
                     customerInList.ServiceVisit[x].Id = customer.ServiceVisit[x].Id;
                     customerInList.ServiceVisit[x].Price = customer.ServiceVisit[x].Price;
-                    customerInList.ServiceVisit[x].Description = customer.ServiceVisit[x].Description;
+                    for(int y = 0; y < customerInList.ServiceVisit[x].Description.Length; ++y){
+                        customerInList.ServiceVisit[x].Description[y] = customer.ServiceVisit[x].Description[y];
+                    } 
                     customerInList.ServiceVisit[x].Date = customer.ServiceVisit[x].Date;
                 }
 
@@ -139,17 +141,20 @@ class TestExtend
     public Customer GenerateCustomer(int id) {
         string name = GenerateRandomString(5);
         string lastName = GenerateRandomString(10);
-        Customer customer = new(id, name, lastName);
+        Customer customer = new(id, "xxxxxxxxxx", name, lastName);
 
         for(int i = 0; i < customer.ServiceVisit.Length; ++i) {
             customer.AddServVisit(GenerateServVisit(i));
+            for(int j = 0; j < customer.ServiceVisit[i].Description.Length; ++j){
+                customer.ServiceVisit[i].AddDescription(GenerateRandomString(11));
+            }
         }
 
         return customer;
     }
 
     public ServiceVisit GenerateServVisit(int id) {
-        return new ServiceVisit(id, DateTime.Now, _random.NextDouble() * (1500.0 - 40.0) + 40.0, GenerateRandomString(18));
+        return new ServiceVisit(id, DateTime.Now, _random.NextDouble() * (1500.0 - 40.0) + 40.0);
     }
 
     public Dummy GenerateDummy(int id) {

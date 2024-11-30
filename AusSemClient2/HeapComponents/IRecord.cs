@@ -6,5 +6,7 @@ interface IRecord<T>
     public T CreateInstance();
     public byte[] GetByteArray();
     public void FromByteArray(byte[] bytes); 
+    public void Update(T other); 
+    public bool KeyUpdated(T other);
 
 }

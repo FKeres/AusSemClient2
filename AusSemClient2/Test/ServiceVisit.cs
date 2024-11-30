@@ -5,31 +5,38 @@ class ServiceVisit : IRecord<ServiceVisit>
     private int _id;
     private DateTime _date;
     private double _price;
-    private string _description;
+    private string[] _description;
+    public int _validDesc;
     private static readonly int _maxDescSize = 20;
     public int Id { get => _id; set => _id = value; }
 
     public static int MaxDescSize => _maxDescSize;
 
     public double Price { get => _price; set => _price = value; }
-    public string Description { get => _description; set => _description = value; }
+    public string[] Description { get => _description; set => _description = value; }
     public DateTime Date { get => _date; set => _date = value; }
 
     public ServiceVisit() {
-
+        _description = new string[10];
     }
 
-    public ServiceVisit(int id, DateTime date, double price, string description) {
+    public ServiceVisit(int id, DateTime date, double price) {
         _id = id;
-        _description = description;
+        _description = new string[10];
         _price = price;
         _date = date;
+        _validDesc = 0;
+
+        var tmpString = "xxxxxxxxxx";
+        for(int i = 0; i < _description.Length; ++i) {
+            _description[i] = tmpString;
+        }
     }
 
 
     public ServiceVisit CreateInstance()
     {
-        return new ServiceVisit(-1, DateTime.MinValue, 0.0, "xxxxxxxxxxxxxxxxxxxx");
+        return new ServiceVisit(-1, DateTime.MinValue, 0.0);
     }
 
     public bool Equals()
@@ -58,9 +65,11 @@ class ServiceVisit : IRecord<ServiceVisit>
             memoryStream.Read(priceBytes, 0, sizeof(double));
             _price = BitConverter.ToDouble(priceBytes, 0);
 
-            byte[] descBytes = new byte[_maxDescSize * sizeof(char)];
-            memoryStream.Read(descBytes, 0, descBytes.Length);
-            _description = Encoding.Unicode.GetString(descBytes).TrimEnd('\0');
+            for(int i = 0; i < _description.Length; ++i) {
+                byte[] descBytes = new byte[_maxDescSize * sizeof(char)];
+                memoryStream.Read(descBytes, 0, descBytes.Length);
+                _description[i] = Encoding.Unicode.GetString(descBytes).TrimEnd('\0');
+            }
 
         }
     }
@@ -74,9 +83,12 @@ class ServiceVisit : IRecord<ServiceVisit>
             memoryStream.Write(BitConverter.GetBytes(_date.Ticks), 0, sizeof(long));
             memoryStream.Write(BitConverter.GetBytes(_price), 0, sizeof(double));
 
-            string paddedDesc = _description?.PadRight(_maxDescSize, '\0') ?? new string('\0', _maxDescSize);
-            byte[] nameBytes = Encoding.Unicode.GetBytes(paddedDesc);
-            memoryStream.Write(nameBytes, 0, nameBytes.Length);
+            foreach (var rec in _description)
+            {
+                string paddedDesc = rec?.PadRight(_maxDescSize, '\0') ?? new string('\0', _maxDescSize);
+                byte[] descBytes = Encoding.Unicode.GetBytes(paddedDesc);
+                memoryStream.Write(descBytes, 0, descBytes.Length);
+            }
 
             return memoryStream.ToArray();
         }
@@ -87,13 +99,39 @@ class ServiceVisit : IRecord<ServiceVisit>
         int idSize = sizeof(int);
         int dateSize = sizeof(long);
         int doubleSize = sizeof(double);
-        int stringSize = _maxDescSize * sizeof(char);
+        int stringSize = _maxDescSize * sizeof(char) * _description.Length;
 
         return idSize + dateSize + doubleSize + stringSize;
     }
 
     public override string ToString()
     {
-        return _id.ToString() + _price.ToString() + _description + _date.ToString();
+        string tmpString =  _id.ToString() + _price.ToString() + _date.ToString();  
+        foreach(var desc in _description) {
+            tmpString += desc;
+        }
+
+        return tmpString;
+    }
+
+    public void AddDescription(string description) {
+        if(_validDesc < description.Length) {
+            _description[_validDesc] = description;
+            ++_validDesc;
+        }
+    }
+
+    public void Update(ServiceVisit other)
+    {
+        _date = other.Date != _date ? other.Date : _date;
+        for(int i = 0; i < _validDesc; ++i) {
+            _description[i] = other.Description[i] != _description[i] ? other.Description[i] : _description[i];
+        }
+        _price = other.Price != _price ? other.Price : _price;
+    }
+
+    public bool KeyUpdated(ServiceVisit other)
+    {
+        throw new NotImplementedException();
     }
 }

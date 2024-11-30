@@ -111,4 +111,14 @@ class Dummy : IRecord<Dummy>, IExtendRec
     {
         throw new NotImplementedException();
     }
+
+    public void Update(Dummy other)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool KeyUpdated(Dummy other)
+    {
+        throw new NotImplementedException();
+    }
 }

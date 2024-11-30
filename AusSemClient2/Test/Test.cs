@@ -123,7 +123,7 @@ class Test
             if(operation == 1) {
                 stopwatch.Start();
                 Customer customer = GenerateCustomer(j);
-                Customer customerInList = new Customer(customer.Id, customer.Name, customer.LastName);
+                Customer customerInList = new Customer(customer.Id, "xxxxxxxxxx", customer.Name, customer.LastName);
 
                 for(int x = 0; x < customerInList.ServiceVisit.Length; ++x) {
                     customerInList.ServiceVisit[x].Id = customer.ServiceVisit[x].Id;
@@ -212,7 +212,7 @@ class Test
     public Customer GenerateCustomer(int id) {
         string name = GenerateRandomString(5);
         string lastName = GenerateRandomString(10);
-        Customer customer = new(id, name, lastName);
+        Customer customer = new(id, "xxxxxxxxxx", name, lastName);
 
         for(int i = 0; i < customer.ServiceVisit.Length; ++i) {
             customer.AddServVisit(GenerateServVisit(i));
@@ -222,7 +222,7 @@ class Test
     }
 
     public ServiceVisit GenerateServVisit(int id) {
-        return new ServiceVisit(id, DateTime.Now, _random.NextDouble() * (1500.0 - 40.0) + 40.0, GenerateRandomString(18));
+        return new ServiceVisit(id, DateTime.Now, _random.NextDouble() * (1500.0 - 40.0) + 40.0);
     }
 
     public Dummy GenerateDummy(int id) {
