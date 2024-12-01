@@ -11,44 +11,71 @@
 <button class="btn btn-info" @onclick="ShowFindByIdDialog">Find by ID</button>
 <button class="btn btn-info" @onclick="ShowFindByEcvDialog">Find by EČV</button>
 
-<div>
+<div class="container mt-4">
     @if (_customers.Any())
     {
-        <ul>
+        <div class="row">
             @foreach (var customer in _customers)
             {
-                <li>
-                    <strong>@customer.Id @customer.Ecv @customer.Name @customer.LastName</strong>
-                    <ul>
-                        @if (customer.ServiceVisit.Any())
-                        {
-                            @for(int i = 0; i < customer.ValidServiceNum; ++i)
+                <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                Customer: 
+                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.Id" readonly />
+                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.Ecv" />
+                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.Name" />
+                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.LastName" />
+                            </h5>
+                            <hr />
+                            <h6>Service Visits:</h6>
+                            @if (customer.ServiceVisit.Any())
                             {
-                                <li>
-                                    <strong>Date:</strong> @customer.ServiceVisit[i].Date <br />
-                                    <strong>Price:</strong> @customer.ServiceVisit[i].Price
-                                    @for(int j = 0; j < customer.ServiceVisit[i]._validDesc; ++j) {
-                                        <strong>Description @j:</strong> @customer.ServiceVisit[i].Description[j];
+                                <ul class="list-group">
+                                    @for (int i = 0; i < customer.ValidServiceNum; ++i)
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="mb-2">
+                                                <strong>Date:</strong>
+                                                <input type="date" class="form-control form-control-sm" value="@customer.ServiceVisit[i].Date.ToString("yyyy-MM-dd")" />
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Price:</strong>
+                                                <input type="number" class="form-control form-control-sm" value="@customer.ServiceVisit[i].Price" />
+                                            </div>
+                                            @for (int j = 0; j < customer.ServiceVisit[i].ValidDesc; ++j)
+                                            {
+                                                <div class="mb-2">
+                                                    <strong>Description @j:</strong>
+                                                    <textarea class="form-control form-control-sm">@customer.ServiceVisit[i].Description[j]</textarea>
+                                                </div>
+                                            }
+                                        </li>
                                     }
-                                </li>
+                                </ul>
                             }
-                        }
-                        else
-                        {
-                            <li>No service visits available.</li>
-                        }
-                    </ul>
-                    @if (customer.ServiceVisit.Count() < customer.ValidServiceNum) 
-                    {
-                        <button class="btn btn-primary btn-sm" @onclick="() => ShowAddServiceVisitDialog(customer.Id, customer.Ecv)">Add Service Visit</button>
-                    }
-                </li>
+                            else
+                            {
+                                <p class="text-muted">No service visits available.</p>
+                            }
+
+                            @if (customer.ValidServiceNum < customer.ServiceVisit.Length)
+                            {
+                                <button class="btn btn-primary btn-sm mt-3" @onclick="() => ShowAddServiceVisitDialog(customer)">
+                                    Add Service Visit
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
             }
-        </ul>
+        </div>
     }
     else
     {
-        <p>No customers available.</p>
+        <div class="alert alert-warning" role="alert">
+            No customers available.
+        </div>
     }
 </div>
 
@@ -94,6 +121,7 @@
 
 @code {
     private List<Customer> _customers = new();
+    private Customer _editedCustomer;
 
     private bool isAddDialogVisible = false;
     private bool isFindByIdDialogVisible = false;
@@ -127,6 +155,7 @@
     }
 
     public void FindById(int customerId) {
+        _customers.Clear();
         _id = customerId;
         _customers.Add(HomeService.FindById(_id));
 
@@ -141,8 +170,9 @@
         StateHasChanged();
     }
 
-    public void AddServiceVisit() {
-
+    public void AddServiceVisit(ServiceVisit servVisit) {
+        _editedCustomer.AddServVisit(servVisit);
+        HomeService.UpdateCustomer(_editedCustomer);
     }
 
     void ShowAddCustomerDialog()
@@ -190,10 +220,24 @@
         StateHasChanged();
     }
 
-    void ShowAddServiceVisitDialog(int id, string ecv)
+    void ShowAddServiceVisitDialog(Customer customer)
     {
-        _id = id;
-        _ecv = ecv;
+        _editedCustomer = customer;
+        _id = customer.Id;
+        _ecv = customer.Ecv;
+
+        _description1 = "";
+        _description2 = "";
+        _description3 = "";
+        _description4 = "";
+        _description5  = "";
+        _description6 = "";
+        _description7  = "";
+        _description8  = "";
+        _description9 = "";
+        _description10  = "";
+
+
         isAddServiceVisitDialogVisible = true;
         StateHasChanged();
     }

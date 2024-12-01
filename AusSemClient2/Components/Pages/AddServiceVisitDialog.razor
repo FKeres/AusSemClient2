@@ -8,15 +8,15 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="customerId" class="form-label">Customer ID</label>
-                    <input type="number" class="form-control" id="customerId" @bind="CustomerId" />
+                    <input type="number" class="form-control" id="customerId" @bind="CustomerId" readonly/>
+                </div>
+                <div class="mb-3">
+                    <label for="ecv" class="form-label">EČV</label>
+                    <input type="text" class="form-control" id="ecv" @bind="Ecv" readonly/>
                 </div>
                 <div class="mb-3">
                     <label for="id" class="form-label">ID</label>
                     <input type="number" class="form-control" id="id" @bind="Id" />
-                </div>
-                <div class="mb-3">
-                    <label for="ecv" class="form-label">EČV</label>
-                    <input type="text" class="form-control" id="ecv" @bind="Ecv" />
                 </div>
                 <div class="mb-3">
                     <label for="name" class="form-label">Date</label>
@@ -28,42 +28,42 @@
                 </div>
                 <div class="mb-3">
                     <label for="description1" class="form-label">Description 1</label>
-                    <input type="text" class="form-control" id="description1" @bind="Description1"  maxlength="20" />
+                    <input type="text" class="form-control" id="description1" value="@Description1" @oninput="e => OnInputChanged(e, 1)" maxlength="20" />
                 </div>
                 <div class="mb-3">
                     <label for="description2" class="form-label">Description 2</label>
-                    <input type="text" class="form-control" id="description2" @bind="Description2"  maxlength="20" />
+                    <input type="text" class="form-control" id="description2" value="@Description2" @oninput="e => OnInputChanged(e, 2)"  maxlength="20" readonly="@IsReadOnly2" />
                 </div>
                 <div class="mb-3">
                     <label for="description3" class="form-label">Description 3</label>
-                    <input type="text" class="form-control" id="description3" @bind="Description3"  maxlength="20" />
+                    <input type="text" class="form-control" id="description3" value="@Description3" @oninput="e => OnInputChanged(e, 3)"  maxlength="20" readonly="@IsReadOnly3" />
                 </div>
                 <div class="mb-3">
                     <label for="description4" class="form-label">Description 4</label>
-                    <input type="text" class="form-control" id="description4" @bind="Description4"  maxlength="20" />
+                    <input type="text" class="form-control" id="description4" value="@Description4" @oninput="e => OnInputChanged(e, 4)"  maxlength="20" readonly="@IsReadOnly4" />
                 </div>
                 <div class="mb-3">
                     <label for="description5" class="form-label">Description 5</label>
-                    <input type="text" class="form-control" id="description5" @bind="Description5"  maxlength="20" />
+                    <input type="text" class="form-control" id="description5" value="@Description5" @oninput="e => OnInputChanged(e, 5)"  maxlength="20" readonly="@IsReadOnly5" />
                 </div>
                 <div class="mb-3">
                     <label for="description6" class="form-label">Description 6</label>
-                    <input type="text" class="form-control" id="description6" @bind="Description6"  maxlength="20" />
+                    <input type="text" class="form-control" id="description6" value="@Description6" @oninput="e => OnInputChanged(e, 6)"  maxlength="20" readonly="@IsReadOnly6" />
                 </div>
                 <div class="mb-3">
                     <label for="description7" class="form-label">Description 7</label>
-                    <input type="text" class="form-control" id="description7" @bind="Description7"  maxlength="20" />
+                    <input type="text" class="form-control" id="description7" value="@Description7" @oninput="e => OnInputChanged(e, 7)"  maxlength="20" readonly="@IsReadOnly7" />
                 </div>
                 <div class="mb-3">
                     <label for="description8" class="form-label">Description 8</label>
-                    <input type="text" class="form-control" id="description8" @bind="Description8"  maxlength="20" />
+                    <input type="text" class="form-control" id="description8" value="@Description8" @oninput="e => OnInputChanged(e, 8)"  maxlength="20" readonly="@IsReadOnly8" />
                 </div><div class="mb-3">
                     <label for="description9" class="form-label">Description 9</label>
-                    <input type="text" class="form-control" id="description9" @bind="Description9"  maxlength="20" />
+                    <input type="text" class="form-control" id="description9" value="@Description9" @oninput="e => OnInputChanged(e, 9)"  maxlength="20" readonly="@IsReadOnly9" />
                 </div>
                 <div class="mb-3">
                     <label for="description10" class="form-label">Description 10</label>
-                    <input type="text" class="form-control" id="description10" @bind="Description10"  maxlength="20" />
+                    <input type="text" class="form-control" id="description10" value="@Description10" @oninput="e => OnInputChanged(e, 10)"  maxlength="20" readonly="@IsReadOnly10" />
                 </div>
             </div>
             <div class="modal-footer">
@@ -77,7 +77,7 @@
 @code{
     [Parameter] public bool IsVisible { get; set; } = false;
     [Parameter] public EventCallback OnClose { get; set; }
-    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback<ServiceVisit> OnSubmit { get; set; }
 
     [Parameter] public int CustomerId { get; set; }
     [Parameter] public string Ecv { get; set; } = "";
@@ -95,6 +95,16 @@
     [Parameter] public string Description9 { get; set; } = "";
     [Parameter] public string Description10 { get; set; } = "";
 
+    private bool IsReadOnly2 { get; set; } = true;
+    private bool IsReadOnly3 { get; set; } = true;
+    private bool IsReadOnly4 { get; set; } = true;
+    private bool IsReadOnly5 { get; set; } = true;
+    private bool IsReadOnly6 { get; set; } = true;
+    private bool IsReadOnly7 { get; set; } = true;
+    private bool IsReadOnly8 { get; set; } = true;
+    private bool IsReadOnly9 { get; set; } = true;
+    private bool IsReadOnly10 { get; set; } = true;
+
     private void CloseDialog()
     {
         IsVisible = false;
@@ -106,10 +116,108 @@
 
     private void SubmitCustomer()
     {
+
         if (OnSubmit.HasDelegate)
         {
-            OnSubmit.InvokeAsync();
+            ServiceVisit serviceVisit = new(Id, Date, Price);
+            if(!string.IsNullOrWhiteSpace(Description1)){
+                serviceVisit.AddDescription(Description1);
+                if(!IsReadOnly2) {
+                    serviceVisit.AddDescription(Description2);
+                    if(!IsReadOnly3) {
+                        serviceVisit.AddDescription(Description3);
+                        if(!IsReadOnly4) {
+                            serviceVisit.AddDescription(Description4);
+                            if(!IsReadOnly5) {
+                                serviceVisit.AddDescription(Description5);
+                                if(!IsReadOnly6) {
+                                    serviceVisit.AddDescription(Description6);
+                                    if(!IsReadOnly7){
+                                        serviceVisit.AddDescription(Description7);
+                                        if(!IsReadOnly8) {
+                                            serviceVisit.AddDescription(Description8);
+                                            if(!IsReadOnly9) {
+                                                serviceVisit.AddDescription(Description9);
+                                                if(!IsReadOnly10) {
+                                                    serviceVisit.AddDescription(Description10);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            OnSubmit.InvokeAsync(serviceVisit);
         }
         CloseDialog();
+    }
+
+/*
+    private void UpdateReadOnlyState(ChangeEventArgs e)
+    {
+        IsReadOnly2 = string.IsNullOrWhiteSpace(Description1);
+        IsReadOnly3 = string.IsNullOrWhiteSpace(Description2);
+        IsReadOnly4 = string.IsNullOrWhiteSpace(Description3);
+        IsReadOnly5 = string.IsNullOrWhiteSpace(Description4);
+        IsReadOnly6 = string.IsNullOrWhiteSpace(Description1);
+        IsReadOnly7 = string.IsNullOrWhiteSpace(Description2);
+        IsReadOnly8 = string.IsNullOrWhiteSpace(Description3);
+        IsReadOnly9 = string.IsNullOrWhiteSpace(Description4);
+        IsReadOnly10 = string.IsNullOrWhiteSpace(Description4);
+        
+    }
+*/
+    private void OnInputChanged(ChangeEventArgs e, int descriptionNumber)
+    {
+        var newValue = e.Value?.ToString() ?? string.Empty;
+
+        switch (descriptionNumber)
+        {
+            case 1:
+                Description1 = newValue;
+                IsReadOnly2 = string.IsNullOrWhiteSpace(Description1);
+                break;
+            case 2:
+                Description2 = newValue;
+                IsReadOnly3 = string.IsNullOrWhiteSpace(Description2);
+                break;
+            case 3:
+                Description3 = newValue;
+                IsReadOnly4 = string.IsNullOrWhiteSpace(Description3);
+                break;
+            case 4:
+                Description4 = newValue;
+                IsReadOnly5 = string.IsNullOrWhiteSpace(Description4);
+                break;
+            case 5:
+                Description5 = newValue;
+                IsReadOnly6 = string.IsNullOrWhiteSpace(Description5);
+                break;
+            case 6:
+                Description6 = newValue;
+                IsReadOnly7 = string.IsNullOrWhiteSpace(Description6);
+                break;
+            case 7:
+                Description7 = newValue;
+                IsReadOnly8 = string.IsNullOrWhiteSpace(Description7);
+                break;
+            case 8:
+                Description8 = newValue;
+                IsReadOnly9 = string.IsNullOrWhiteSpace(Description8);
+                break;
+            case 9:
+                Description9 = newValue;
+                IsReadOnly10 = string.IsNullOrWhiteSpace(Description9);
+                break;
+            case 10:
+                Description10 = newValue;
+                break;
+        }
+
+        StateHasChanged();
     }
 }

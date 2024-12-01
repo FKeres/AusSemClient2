@@ -6,7 +6,7 @@ public class ServiceVisit : IRecord<ServiceVisit>
     private DateTime _date;
     private double _price;
     private string[] _description;
-    public int _validDesc;
+    private int _validDesc;
     private static readonly int _maxDescSize = 20;
     public int Id { get => _id; set => _id = value; }
 
@@ -15,6 +15,7 @@ public class ServiceVisit : IRecord<ServiceVisit>
     public double Price { get => _price; set => _price = value; }
     public string[] Description { get => _description; set => _description = value; }
     public DateTime Date { get => _date; set => _date = value; }
+    public int ValidDesc { get => _validDesc; set => _validDesc = value; }
 
     public ServiceVisit() {
         _description = new string[10];
@@ -124,9 +125,10 @@ public class ServiceVisit : IRecord<ServiceVisit>
     public void Update(ServiceVisit other)
     {
         _date = other.Date != _date ? other.Date : _date;
-        for(int i = 0; i < _validDesc; ++i) {
+        for(int i = 0; i < other.ValidDesc; ++i) {
             _description[i] = other.Description[i] != _description[i] ? other.Description[i] : _description[i];
         }
+        _validDesc = other.ValidDesc != _validDesc ? other.ValidDesc : _validDesc;
         _price = other.Price != _price ? other.Price : _price;
     }
 
@@ -139,6 +141,7 @@ public class ServiceVisit : IRecord<ServiceVisit>
         _date = other.Date;
         _id = other.Id;
         _price = other.Price;
+        _validDesc = other.ValidDesc;
 
         for (int i = 0; i < _description.Length; i++)
         {

@@ -70,4 +70,11 @@ class HomeService
 
     }
 
+    public void UpdateCustomer(Customer customer) {
+        _customerByIdFind.Id = customer.Id;
+        CustomerById customerByIdFound = _customersById.Find(_customerByIdFind);
+
+        _wholeCustomers.Update(customerByIdFound.Address, customer);
+    }
+
 }

@@ -195,7 +195,7 @@ public class Customer : IRecord<Customer>, IExtendRec
         _lastName = _lastName != other.LastName ? other.LastName : _name;
         _validServiceNum = _validServiceNum != other.ValidServiceNum ? other.ValidServiceNum : _validServiceNum;
 
-        for(int i = 0; i < _validServiceNum; ++i) {
+        for(int i = 0; i < other.ValidServiceNum; ++i) {
             _serviceVisit[i].Update(other.ServiceVisit[i]);
         }
 
