@@ -192,7 +192,7 @@ public class Customer : IRecord<Customer>, IExtendRec
         _id = _id != other.Id ? other.Id : _id;
         _ecv = _ecv != other.Ecv ? other.Ecv : _ecv;
         _name = _name != other.Name ? other.Name : _name;
-        _lastName = _lastName != other.LastName ? other.LastName : _name;
+        _lastName = _lastName != other.LastName ? other.LastName : _lastName;
         _validServiceNum = _validServiceNum != other.ValidServiceNum ? other.ValidServiceNum : _validServiceNum;
 
         for(int i = 0; i < other.ValidServiceNum; ++i) {

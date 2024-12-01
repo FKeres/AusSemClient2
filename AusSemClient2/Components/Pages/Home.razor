@@ -7,7 +7,7 @@
 
 <h3>Customers and Service Visits</h3>
 
-<button class="btn btn-primary" @onclick="ShowAddCustomerDialog">Add Customer</button>
+<button class="btn btn-success" @onclick="ShowAddCustomerDialog">Add Customer</button>
 <button class="btn btn-info" @onclick="ShowFindByIdDialog">Find by ID</button>
 <button class="btn btn-info" @onclick="ShowFindByEcvDialog">Find by EČV</button>
 
@@ -23,9 +23,9 @@
                             <h5 class="card-title">
                                 Customer: 
                                 <input class="form-control form-control-sm d-inline w-auto" value="@customer.Id" readonly />
-                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.Ecv" />
-                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.Name" />
-                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.LastName" />
+                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.Ecv" readonly/>
+                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.Name" readonly/>
+                                <input class="form-control form-control-sm d-inline w-auto" value="@customer.LastName" readonly/>
                             </h5>
                             <hr />
                             <h6>Service Visits:</h6>
@@ -37,17 +37,17 @@
                                         <li class="list-group-item">
                                             <div class="mb-2">
                                                 <strong>Date:</strong>
-                                                <input type="date" class="form-control form-control-sm" value="@customer.ServiceVisit[i].Date.ToString("yyyy-MM-dd")" />
+                                                <input type="date" class="form-control form-control-sm" value="@customer.ServiceVisit[i].Date.ToString("yyyy-MM-dd")" readonly/>
                                             </div>
                                             <div class="mb-2">
                                                 <strong>Price:</strong>
-                                                <input type="number" class="form-control form-control-sm" value="@customer.ServiceVisit[i].Price" />
+                                                <input type="number" class="form-control form-control-sm" value="@customer.ServiceVisit[i].Price" readonly/>
                                             </div>
                                             @for (int j = 0; j < customer.ServiceVisit[i].ValidDesc; ++j)
                                             {
                                                 <div class="mb-2">
                                                     <strong>Description @j:</strong>
-                                                    <textarea class="form-control form-control-sm">@customer.ServiceVisit[i].Description[j]</textarea>
+                                                    <textarea class="form-control form-control-sm" readonly>@customer.ServiceVisit[i].Description[j]</textarea>
                                                 </div>
                                             }
                                         </li>
@@ -61,10 +61,13 @@
 
                             @if (customer.ValidServiceNum < customer.ServiceVisit.Length)
                             {
-                                <button class="btn btn-primary btn-sm mt-3" @onclick="() => ShowAddServiceVisitDialog(customer)">
+                                <button class="btn btn-success btn-sm mt-3" @onclick="() => ShowAddServiceVisitDialog(customer)">
                                     Add Service Visit
                                 </button>
                             }
+                             <button class="btn btn-primary btn-sm mt-3" @onclick="() => ShowUpdateCustomerDialog(customer)">
+                                Update Customer
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -119,14 +122,21 @@
     OnClose="CloseFindByEcvDialog"
     OnSubmit="FindByEcv" />
 
+<UpdateDialog
+    IsVisible="@isUpdateCustomerDialogVisible"    
+    Customer="@_editedCustomer" 
+    OnClose="CloseUpdateCustomerDialog"
+    OnSubmit="UpdateCustomer" />
+
 @code {
     private List<Customer> _customers = new();
-    private Customer _editedCustomer;
+    private Customer _editedCustomer = new();
 
     private bool isAddDialogVisible = false;
     private bool isFindByIdDialogVisible = false;
     private bool isFindByEcvDialogVisible = false;
     private bool isAddServiceVisitDialogVisible = false;
+    private bool isUpdateCustomerDialogVisible = false;
 
     private int _id = 0;
     private string _ecv = "";
@@ -164,6 +174,7 @@
     }
 
     public void FindByEcv(string ecv) {
+        _customers.Clear();
         _customers.Add(HomeService.FindByEcv(ecv));
 
         isFindByEcvDialogVisible = false;
@@ -172,6 +183,11 @@
 
     public void AddServiceVisit(ServiceVisit servVisit) {
         _editedCustomer.AddServVisit(servVisit);
+        HomeService.UpdateCustomer(_editedCustomer);
+    }
+
+    public void UpdateCustomer(Customer customer) {
+        _editedCustomer = customer;
         HomeService.UpdateCustomer(_editedCustomer);
     }
 
@@ -245,6 +261,18 @@
     void CloseAddServiceVisitDialog()
     {
         isAddServiceVisitDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowUpdateCustomerDialog(Customer customer) {
+        _editedCustomer = customer;
+        isUpdateCustomerDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseUpdateCustomerDialog()
+    {
+        isUpdateCustomerDialogVisible = false;
         StateHasChanged();
     }
 }

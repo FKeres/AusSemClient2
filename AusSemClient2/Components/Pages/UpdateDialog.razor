@@ -1,0 +1,59 @@
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:@(IsVisible ? "block" : "none"); background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Customer</h5>
+                <button type="button" class="btn-close" @onclick="CloseDialog"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="customerId" class="form-label">Customer ID</label>
+                    <input type="number" class="form-control" id="customerId" @bind="Customer.Id" readonly/>
+                </div>
+                <div class="mb-3">
+                    <label for="ecv" class="form-label">EČV</label>
+                    <input type="text" class="form-control" id="ecv" @bind="Customer.Ecv" readonly/>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Customer Name</label>
+                    <input type="text" class="form-control" id="name" @bind="Customer.Name" maxlength="15" />
+                </div>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Customer Last Name</label>
+                    <input type="text" class="form-control" id="lastName" @bind="Customer.LastName" maxlength="20" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CloseDialog">Cancel</button>
+                <button type="button" class="btn btn-primary" @onclick="SubmitCustomer">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public bool IsVisible { get; set; } = false;
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback<Customer> OnSubmit { get; set; }
+
+    [Parameter] public Customer Customer { get; set; }
+
+    private void CloseDialog()
+    {
+        IsVisible = false;
+        if (OnClose.HasDelegate)
+        {
+            OnClose.InvokeAsync();
+        }
+    }
+
+    private void SubmitCustomer()
+    {
+        if (OnSubmit.HasDelegate)
+        {
+            OnSubmit.InvokeAsync(Customer);
+        }
+        CloseDialog();
+    }
+}
