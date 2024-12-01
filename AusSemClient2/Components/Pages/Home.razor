@@ -11,8 +11,16 @@
 <button class="btn btn-info" @onclick="ShowFindByIdDialog">Find by ID</button>
 <button class="btn btn-info" @onclick="ShowFindByEcvDialog">Find by EČV</button>
 <button class="btn btn-dark" @onclick="ShowGenerateDialog">Generate</button>
-<button class="btn btn-primary" @onclick="ShowSequenceHeap">Show Sequence Heap</button>
-
+<div class="btn-group">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        Sequence
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" @onclick="ShowSequenceHeap">Show Sequence Heap</a></li>
+        <li><a class="dropdown-item" @onclick="ShowSequenceById">Show Sequence by Id</a></li>
+        <li><a class="dropdown-item" @onclick="ShowSequenceByEcv">Show Sequence by EČV</a></li>
+    </ul>
+</div>
 
 <div class="container mt-4">
     @if (_customers.Any())
@@ -425,6 +433,20 @@
     private void CloseShowSequenceHeapDialog()
     {
         isShowHeapDialogVisible = false;
+        StateHasChanged();
+    }
+
+    private void ShowSequenceById()
+    {
+        _consoleOutput = HomeService.ShowSequenceById();
+        isShowHeapDialogVisible = true;
+        StateHasChanged();
+    }
+
+    private void ShowSequenceByEcv()
+    {
+        _consoleOutput = HomeService.ShowSequenceByEcv();
+        isShowHeapDialogVisible = true;
         StateHasChanged();
     }
 }

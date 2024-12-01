@@ -203,4 +203,66 @@ class HomeService
         return output;
     }
 
+    public string ShowSequenceById() {
+        int c = 0;
+        string output = $"***** ActualDepth = {_customersById.ActualDepth} ********************************\n";
+
+        foreach(var block in _customersById.SequenceIterate()) {
+                    output += $"********************************************************************\n";
+                    if(block is not null) {
+                        output += $"Index {c} - adresa bloku - {block.Address} - block depth {_customersById.BlockProps[c].BlockDepth} \n";
+                        for(int k = 0; k < block.ValidCount; ++k) {
+                        int idc = block.Records[k].Id;
+
+                        string binaryRepresentation = Convert.ToString(idc, 2).PadLeft(32, '0');
+
+                        output += $"         {idc} ({binaryRepresentation}) \n";
+                    }
+                    } else {
+                        output += $"Index {c} - adresa bloku - -1 \n";
+                    }
+                    
+                    output += $"********************************************************************\n";
+                    output += "\n";
+
+                    ++c;
+                }
+
+        return output;
+    }
+
+    public string ShowSequenceByEcv() {
+        int c = 0;
+        string output = $"***** ActualDepth = {_customersById.ActualDepth} ********************************\n";
+
+        foreach(var block in _customersById.SequenceIterate()) {
+                    output += $"********************************************************************\n";
+                    if(block is not null) {
+                        output += $"Index {c} - adresa bloku - {block.Address} - block depth {_customersById.BlockProps[c].BlockDepth} \n";
+                        for(int k = 0; k < block.ValidCount; ++k) {
+                            string ecv = block.Records[k].Ecv;
+                            StringBuilder ecvBinaryRepresentation = new StringBuilder();
+
+                            foreach (char character in ecv)
+                            {
+                                int asciiValue = (int)character;
+                                string binaryChar = Convert.ToString(asciiValue, 2).PadLeft(8, '0');
+                                ecvBinaryRepresentation.Append($"{character} ({binaryChar}) ");
+                            }
+
+                            output += $"         {ecv} ({ecvBinaryRepresentation.ToString().TrimEnd()}) \n";
+                        }
+                    } else {
+                        output += $"Index {c} - adresa bloku - -1 \n";
+                    }
+                    
+                    output += $"********************************************************************\n";
+                    output += "\n";
+
+                    ++c;
+                }
+
+        return output;
+    }
+
 }
