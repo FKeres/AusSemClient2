@@ -1,5 +1,9 @@
+using System.Text;
+
 class HomeService
 {
+    private readonly Random _random  =  new Random();
+
     private HeapFile<Customer> _wholeCustomers;
     private ExtendibleHash<CustomerById> _customersById;
     private ExtendibleHash<CustomerByEcv> _customersByEcv;
@@ -75,6 +79,91 @@ class HomeService
         CustomerById customerByIdFound = _customersById.Find(_customerByIdFind);
 
         _wholeCustomers.Update(customerByIdFound.Address, customer);
+    }
+
+    public void Generate(int num) {
+        int min = 0;
+        int max = num;
+
+        List<int> numbers = new List<int>();
+        for (int c = min; c <= max; c++)
+        {
+            numbers.Add(c);
+        }
+
+        int k = 0;
+
+        while(k < num) {
+            int index = _random.Next(numbers.Count);
+            int id = numbers[index];
+            numbers.RemoveAt(index);
+
+            Customer customer = GenerateCustomer(id);
+            Customer customerInList = new Customer(customer.Id, "xxxxxxxxxx", customer.Name, customer.LastName);
+
+            long address = _wholeCustomers.Insert(customer);
+
+            CustomerByEcv customerByEcv = new(customer.Id, customer.Ecv, address);
+            CustomerById customerById = new(customer.Id, customer.Ecv, address);
+
+            _customersById.Insert(customerById);
+            _customersByEcv.Insert(customerByEcv);
+            ++k;
+        }
+    }
+
+    public Customer GenerateCustomer(int id) {
+        string name = GenerateRandomString(5);
+        string lastName = GenerateRandomString(10);
+        string ecv = GenerateRandomEcv(id);
+        Customer customer = new(id, ecv, name, lastName);
+
+        for(int i = 0; i < customer.ServiceVisit.Length; ++i) {
+            customer.AddServVisit(GenerateServVisit(i));
+            for(int j = 0; j < customer.ServiceVisit[i].Description.Length; ++j){
+                customer.ServiceVisit[i].AddDescription(GenerateRandomString(11));
+            }
+        }
+
+        return customer;
+    }
+
+    public ServiceVisit GenerateServVisit(int id) {
+        return new ServiceVisit(id, DateTime.Now, _random.NextDouble() * (1500.0 - 40.0) + 40.0);
+    }
+
+    private string GenerateRandomString(int length)
+    {
+
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        StringBuilder stringBuilder = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++)
+        {
+            int index = _random.Next(chars.Length);
+            stringBuilder.Append(chars[index]);
+        }
+
+        return stringBuilder.ToString();
+
+    }
+
+    private string GenerateRandomEcv(int uniq)
+    {
+        int length = 10 - uniq.ToString().Length;
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        StringBuilder stringBuilder = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++)
+        {
+            int index = _random.Next(chars.Length);
+            stringBuilder.Append(chars[index]);
+        }
+
+        stringBuilder.Append(uniq.ToString());
+
+        return stringBuilder.ToString();
+
     }
 
 }

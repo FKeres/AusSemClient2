@@ -10,6 +10,7 @@
 <button class="btn btn-success" @onclick="ShowAddCustomerDialog">Add Customer</button>
 <button class="btn btn-info" @onclick="ShowFindByIdDialog">Find by ID</button>
 <button class="btn btn-info" @onclick="ShowFindByEcvDialog">Find by EČV</button>
+<button class="btn btn-dark" @onclick="ShowGenerateDialog">Generate</button>
 
 <div class="container mt-4">
     @if (_customers.Any())
@@ -150,6 +151,11 @@
     OnClose="CloseUpdateServDialog"
     OnSubmit="UpdateServiceVisit" />
 
+<GenerateDialog
+    IsVisible="@isGenerateDialogVisible"    
+    OnClose="CloseGenerateDialog"
+    OnSubmit="Generate" />
+
 @code {
     private List<Customer> _customers = new();
     private Customer _editedCustomer = new();
@@ -163,6 +169,7 @@
     private bool isAddServiceVisitDialogVisible = false;
     private bool isUpdateCustomerDialogVisible = false;
     private bool isUpdateServDialogVisible = false;
+    private bool isGenerateDialogVisible = false;
 
     private int _id = 0;
     private string _ecv = "";
@@ -221,6 +228,10 @@
         _editServ.CopyFrom(serviceVisit);
         _editedCustomer.ServiceVisit[_editedServNo].CopyFrom(_editServ);
         HomeService.UpdateCustomer(_editedCustomer);
+    }
+
+    public void Generate(int num) {
+        HomeService.Generate(num);
     }
 
     void ShowAddCustomerDialog()
@@ -312,16 +323,66 @@
         _editedCustomer = customer;
         _editServ = customer.ServiceVisit[servNo];
         _editedServNo = servNo;
-        _description1 = customer.ServiceVisit[servNo].Description[0];
-        _description2 = customer.ServiceVisit[servNo].Description[1];
-        _description3 = customer.ServiceVisit[servNo].Description[2];
-        _description4 = customer.ServiceVisit[servNo].Description[3];
-        _description5  = customer.ServiceVisit[servNo].Description[4];
-        _description6 = customer.ServiceVisit[servNo].Description[5];
-        _description7  = customer.ServiceVisit[servNo].Description[6];
-        _description8  = customer.ServiceVisit[servNo].Description[7];
-        _description9 = customer.ServiceVisit[servNo].Description[8];
-        _description10  = customer.ServiceVisit[servNo].Description[9];
+
+        if(customer.ServiceVisit[servNo].Description[0] == "xxxxxxxxxx") {
+            _description1 = "";
+        } else {
+            _description1 = customer.ServiceVisit[servNo].Description[0];
+        }
+        
+        if(customer.ServiceVisit[servNo].Description[1] == "xxxxxxxxxx") {
+            _description2 = "";
+        } else {
+            _description2 = customer.ServiceVisit[servNo].Description[1];
+        }
+
+        if(customer.ServiceVisit[servNo].Description[2] == "xxxxxxxxxx") {
+            _description3 = "";
+        } else {
+            _description3 = customer.ServiceVisit[servNo].Description[2];
+        }
+
+        if(customer.ServiceVisit[servNo].Description[3] == "xxxxxxxxxx") {
+            _description4 = "";
+        } else {
+            _description4 = customer.ServiceVisit[servNo].Description[3];
+        }
+        if(customer.ServiceVisit[servNo].Description[4] == "xxxxxxxxxx") {
+            _description5 = "";
+        } else {
+            _description5 = customer.ServiceVisit[servNo].Description[4];
+        }
+        
+        if(customer.ServiceVisit[servNo].Description[5] == "xxxxxxxxxx") {
+            _description6 = "";
+        } else {
+            _description6 = customer.ServiceVisit[servNo].Description[5];
+        }
+
+        if(customer.ServiceVisit[servNo].Description[6] == "xxxxxxxxxx") {
+            _description7 = "";
+        } else {
+            _description7 = customer.ServiceVisit[servNo].Description[6];
+        }
+
+        if(customer.ServiceVisit[servNo].Description[7] == "xxxxxxxxxx") {
+            _description8 = "";
+        } else {
+            _description8 = customer.ServiceVisit[servNo].Description[7];
+        }
+
+        if(customer.ServiceVisit[servNo].Description[8] == "xxxxxxxxxx") {
+            _description9 = "";
+        } else {
+            _description9 = customer.ServiceVisit[servNo].Description[8];
+        }
+
+        if(customer.ServiceVisit[servNo].Description[9] == "xxxxxxxxxx") {
+            _description10 = "";
+        } else {
+            _description10 = customer.ServiceVisit[servNo].Description[8];
+        }
+        
         isUpdateServDialogVisible = true;
         StateHasChanged();
     }
@@ -329,6 +390,16 @@
     void CloseUpdateServDialog()
     {
         isUpdateServDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowGenerateDialog() {
+        isGenerateDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseGenerateDialog() {
+        isGenerateDialogVisible = false;
         StateHasChanged();
     }
 }
