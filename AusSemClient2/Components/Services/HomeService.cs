@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 
 class HomeService
@@ -84,6 +85,7 @@ class HomeService
     public void Generate(int num) {
         int min = 0;
         int max = num;
+        Stopwatch stopwatch = new Stopwatch();
 
         List<int> numbers = new List<int>();
         for (int c = min; c <= max; c++)
@@ -98,15 +100,27 @@ class HomeService
             int id = numbers[index];
             numbers.RemoveAt(index);
 
+            Console.WriteLine($"{k}");
+
             Customer customer = GenerateCustomer(id);
             
+            stopwatch.Restart();
             long address = _wholeCustomers.Insert(customer);
+            stopwatch.Stop();
+            Console.WriteLine($"Insert to Heap - {stopwatch.Elapsed}");
 
             CustomerByEcv customerByEcv = new(customer.Id, customer.Ecv, address);
             CustomerById customerById = new(customer.Id, customer.Ecv, address);
 
+            stopwatch.Restart();
             _customersById.Insert(customerById);
+            stopwatch.Stop();
+            Console.WriteLine($"Insert to Ext ID - {stopwatch.Elapsed}");
+
+            stopwatch.Restart();
             _customersByEcv.Insert(customerByEcv);
+            stopwatch.Stop();
+            Console.WriteLine($"Insert to Ext ECV - {stopwatch.Elapsed}");
             ++k;
         }
     }
