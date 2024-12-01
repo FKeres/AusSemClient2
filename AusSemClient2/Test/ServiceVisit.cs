@@ -149,4 +149,8 @@ public class ServiceVisit : IRecord<ServiceVisit>
         }
 
     }
+
+    public void RemoveDescriptions() {
+        _validDesc = 0;
+    }
 }

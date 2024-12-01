@@ -7,14 +7,6 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="customerId" class="form-label">Customer ID</label>
-                    <input type="number" class="form-control" id="customerId" @bind="CustomerId" readonly/>
-                </div>
-                <div class="mb-3">
-                    <label for="ecv" class="form-label">EČV</label>
-                    <input type="text" class="form-control" id="ecv" @bind="Ecv" readonly/>
-                </div>
-                <div class="mb-3">
                     <label for="id" class="form-label">ID</label>
                     <input type="number" class="form-control" id="id" @bind="Id" />
                 </div>
@@ -79,8 +71,6 @@
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public EventCallback<ServiceVisit> OnSubmit { get; set; }
 
-    [Parameter] public int CustomerId { get; set; }
-    [Parameter] public string Ecv { get; set; } = "";
     [Parameter] public int Id { get; set; } = 0;
     [Parameter] public DateTime Date { get; set; } = DateTime.MinValue;
     [Parameter] public double Price { get; set; } = 0.0;
