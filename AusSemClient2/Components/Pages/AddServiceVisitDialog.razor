@@ -1,0 +1,115 @@
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:@(IsVisible ? "block" : "none"); background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Customer</h5>
+                <button type="button" class="btn-close" @onclick="CloseDialog"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="customerId" class="form-label">Customer ID</label>
+                    <input type="number" class="form-control" id="customerId" @bind="CustomerId" />
+                </div>
+                <div class="mb-3">
+                    <label for="id" class="form-label">ID</label>
+                    <input type="number" class="form-control" id="id" @bind="Id" />
+                </div>
+                <div class="mb-3">
+                    <label for="ecv" class="form-label">EČV</label>
+                    <input type="text" class="form-control" id="ecv" @bind="Ecv" />
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" @bind="Date"/>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="price" @bind="Price"/>
+                </div>
+                <div class="mb-3">
+                    <label for="description1" class="form-label">Description 1</label>
+                    <input type="text" class="form-control" id="description1" @bind="Description1"  maxlength="20" />
+                </div>
+                <div class="mb-3">
+                    <label for="description2" class="form-label">Description 2</label>
+                    <input type="text" class="form-control" id="description2" @bind="Description2"  maxlength="20" />
+                </div>
+                <div class="mb-3">
+                    <label for="description3" class="form-label">Description 3</label>
+                    <input type="text" class="form-control" id="description3" @bind="Description3"  maxlength="20" />
+                </div>
+                <div class="mb-3">
+                    <label for="description4" class="form-label">Description 4</label>
+                    <input type="text" class="form-control" id="description4" @bind="Description4"  maxlength="20" />
+                </div>
+                <div class="mb-3">
+                    <label for="description5" class="form-label">Description 5</label>
+                    <input type="text" class="form-control" id="description5" @bind="Description5"  maxlength="20" />
+                </div>
+                <div class="mb-3">
+                    <label for="description6" class="form-label">Description 6</label>
+                    <input type="text" class="form-control" id="description6" @bind="Description6"  maxlength="20" />
+                </div>
+                <div class="mb-3">
+                    <label for="description7" class="form-label">Description 7</label>
+                    <input type="text" class="form-control" id="description7" @bind="Description7"  maxlength="20" />
+                </div>
+                <div class="mb-3">
+                    <label for="description8" class="form-label">Description 8</label>
+                    <input type="text" class="form-control" id="description8" @bind="Description8"  maxlength="20" />
+                </div><div class="mb-3">
+                    <label for="description9" class="form-label">Description 9</label>
+                    <input type="text" class="form-control" id="description9" @bind="Description9"  maxlength="20" />
+                </div>
+                <div class="mb-3">
+                    <label for="description10" class="form-label">Description 10</label>
+                    <input type="text" class="form-control" id="description10" @bind="Description10"  maxlength="20" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CloseDialog">Cancel</button>
+                <button type="button" class="btn btn-primary" @onclick="SubmitCustomer">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter] public bool IsVisible { get; set; } = false;
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
+
+    [Parameter] public int CustomerId { get; set; }
+    [Parameter] public string Ecv { get; set; } = "";
+    [Parameter] public int Id { get; set; } = 0;
+    [Parameter] public DateTime Date { get; set; } = DateTime.MinValue;
+    [Parameter] public double Price { get; set; } = 0.0;
+    [Parameter] public string Description1 { get; set; } = "";
+    [Parameter] public string Description2 { get; set; } = "";
+    [Parameter] public string Description3 { get; set; } = "";
+    [Parameter] public string Description4 { get; set; } = "";
+    [Parameter] public string Description5 { get; set; } = "";
+    [Parameter] public string Description6 { get; set; } = "";
+    [Parameter] public string Description7 { get; set; } = "";
+    [Parameter] public string Description8 { get; set; } = "";
+    [Parameter] public string Description9 { get; set; } = "";
+    [Parameter] public string Description10 { get; set; } = "";
+
+    private void CloseDialog()
+    {
+        IsVisible = false;
+        if (OnClose.HasDelegate)
+        {
+            OnClose.InvokeAsync();
+        }
+    }
+
+    private void SubmitCustomer()
+    {
+        if (OnSubmit.HasDelegate)
+        {
+            OnSubmit.InvokeAsync();
+        }
+        CloseDialog();
+    }
+}

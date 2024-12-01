@@ -38,6 +38,10 @@
                             <li>No service visits available.</li>
                         }
                     </ul>
+                    @if (customer.ServiceVisit.Count() < customer.ValidServiceNum) 
+                    {
+                        <button class="btn btn-primary btn-sm" @onclick="() => ShowAddServiceVisitDialog(customer.Id, customer.Ecv)">Add Service Visit</button>
+                    }
                 </li>
             }
         </ul>
@@ -57,15 +61,34 @@
     OnClose="CloseAddCustomerDialog"
     OnSubmit="AddCustomer" />
 
+<AddServiceVisitDialog 
+    IsVisible="@isAddServiceVisitDialogVisible" 
+    CustomerId="@_id" 
+    Ecv="@_ecv" 
+    Date="@_date" 
+    Price="@_price"
+    Description1="@_description1"
+    Description2="@_description2"
+    Description3="@_description3"
+    Description4="@_description4"
+    Description5="@_description5"
+    Description6="@_description6"
+    Description7="@_description7"
+    Description8="@_description8"
+    Description9="@_description9"
+    Description10="@_description10"
+    OnClose="CloseAddServiceVisitDialog"
+    OnSubmit="AddServiceVisit" />
+
 <FindByIdDialog
-    IsVisible="@isFindByIdDialogVisible" 
+    @bind-IsVisible="isFindByIdDialogVisible"  
     CustomerId="@_id" 
     OnClose="CloseFindByIdDialog"
     OnSubmit="FindById" />
 
 <FindByEcvDialog
-    IsVisible="@isFindByEcvDialogVisible" 
-    CustomerId="@_ecv" 
+    @bind-IsVisible="isFindByEcvDialogVisible"   
+    Ecv="@_ecv" 
     OnClose="CloseFindByEcvDialog"
     OnSubmit="FindByEcv" />
 
@@ -75,31 +98,51 @@
     private bool isAddDialogVisible = false;
     private bool isFindByIdDialogVisible = false;
     private bool isFindByEcvDialogVisible = false;
+    private bool isAddServiceVisitDialogVisible = false;
 
     private int _id = 0;
     private string _ecv = "";
     private string _name = "";
     private string _lastName = "";
 
-    public void AddCustomer() {
-        HomeService.Add(_id, _ecv, _name, _lastName);
+    private DateTime _date { get; set; } = DateTime.MinValue;
+    private double _price { get; set; } = 0.0;
+    private string _description1 { get; set; } = "";
+    private string _description2 { get; set; } = "";
+    private string _description3 { get; set; } = "";
+    private string _description4 { get; set; } = "";
+    private string _description5 { get; set; } = "";
+    private string _description6 { get; set; } = "";
+    private string _description7 { get; set; } = "";
+    private string _description8 { get; set; } = "";
+    private string _description9 { get; set; } = "";
+    private string _description10 { get; set; } = "";
+
+
+    public void AddCustomer(Customer customer) {
+        HomeService.Add(customer.Id, customer.Ecv, customer.Name, customer.LastName);
 
         isAddDialogVisible = false;
         StateHasChanged();
     }
 
-    public void FindById() {
+    public void FindById(int customerId) {
+        _id = customerId;
         _customers.Add(HomeService.FindById(_id));
 
-        isFindByIdDialogVisible = true;
+        isFindByIdDialogVisible = false;
         StateHasChanged();
     }
 
-    public void FindByEcv() {
-        _customers.Add(HomeService.FindByEcv(_ecv));
+    public void FindByEcv(string ecv) {
+        _customers.Add(HomeService.FindByEcv(ecv));
 
-        isFindByEcvDialogVisible = true;
+        isFindByEcvDialogVisible = false;
         StateHasChanged();
+    }
+
+    public void AddServiceVisit() {
+
     }
 
     void ShowAddCustomerDialog()
@@ -144,6 +187,20 @@
      void CloseFindByEcvDialog()
     {
         isFindByEcvDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void ShowAddServiceVisitDialog(int id, string ecv)
+    {
+        _id = id;
+        _ecv = ecv;
+        isAddServiceVisitDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseAddServiceVisitDialog()
+    {
+        isAddServiceVisitDialogVisible = false;
         StateHasChanged();
     }
 }

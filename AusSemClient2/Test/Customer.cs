@@ -1,6 +1,6 @@
 using System.Text;
 
-class Customer : IRecord<Customer>, IExtendRec
+public class Customer : IRecord<Customer>, IExtendRec
 {
 
     private int _id;
@@ -42,7 +42,7 @@ class Customer : IRecord<Customer>, IExtendRec
         if(_validServiceNum <= _serviceVisit.Length) {
             _serviceVisit[_validServiceNum] = serviceVisit;
             ++_validServiceNum;
-        }   
+        }
     }
 
     public bool Equals()
@@ -197,7 +197,7 @@ class Customer : IRecord<Customer>, IExtendRec
 
         for(int i = 0; i < _validServiceNum; ++i) {
             _serviceVisit[i].Update(other.ServiceVisit[i]);
-        } 
+        }
 
     }
 

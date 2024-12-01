@@ -34,7 +34,7 @@
 @code {
     [Parameter] public bool IsVisible { get; set; } = false;
     [Parameter] public EventCallback OnClose { get; set; }
-    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback<Customer> OnSubmit { get; set; }
 
     [Parameter] public int CustomerId { get; set; }
     [Parameter] public string Ecv { get; set; } = "";
@@ -54,7 +54,8 @@
     {
         if (OnSubmit.HasDelegate)
         {
-            OnSubmit.InvokeAsync();
+            Customer customer = new(CustomerId, Ecv, CustomerName, CustomerLastName);
+            OnSubmit.InvokeAsync(customer);
         }
         CloseDialog();
     }

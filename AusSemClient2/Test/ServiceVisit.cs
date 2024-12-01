@@ -1,6 +1,6 @@
 using System.Text;
 
-class ServiceVisit : IRecord<ServiceVisit>
+public class ServiceVisit : IRecord<ServiceVisit>
 {
     private int _id;
     private DateTime _date;

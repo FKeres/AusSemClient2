@@ -63,6 +63,7 @@ class HomeService
         Customer customerFound = _wholeCustomers.Get(customerByEcvFound.Address, _customerFind);
         
         Customer returnCustomer = new();
+        returnCustomer = returnCustomer.CreateInstance();
         returnCustomer.CopyFrom(customerFound);
         
         return returnCustomer;

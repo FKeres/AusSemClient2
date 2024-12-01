@@ -20,27 +20,35 @@
     </div>
 
 @code {
-    [Parameter] public bool IsVisible { get; set; } = false;
+    private bool _isVisible;
+    [Parameter]
+    public bool IsVisible 
+    { 
+        get => _isVisible; 
+        set
+        {
+            if (_isVisible != value)
+            {
+                _isVisible = value;
+                IsVisibleChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
-    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback<string> OnSubmit { get; set; }
 
     [Parameter] public string Ecv { get; set; }
 
     private void CloseDialog()
     {
         IsVisible = false;
-        if (OnClose.HasDelegate)
-        {
-            OnClose.InvokeAsync();
-        }
     }
 
     private void SubmitCustomer()
     {
-        if (OnSubmit.HasDelegate)
-        {
-            OnSubmit.InvokeAsync();
-        }
+        OnSubmit.InvokeAsync(Ecv);
         CloseDialog();
     }
 
