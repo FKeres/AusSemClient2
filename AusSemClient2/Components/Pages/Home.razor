@@ -11,6 +11,8 @@
 <button class="btn btn-info" @onclick="ShowFindByIdDialog">Find by ID</button>
 <button class="btn btn-info" @onclick="ShowFindByEcvDialog">Find by EČV</button>
 <button class="btn btn-dark" @onclick="ShowGenerateDialog">Generate</button>
+<button class="btn btn-primary" @onclick="ShowSequenceHeap">Show Sequence Heap</button>
+
 
 <div class="container mt-4">
     @if (_customers.Any())
@@ -156,6 +158,13 @@
     OnClose="CloseGenerateDialog"
     OnSubmit="Generate" />
 
+<ShowSequenceHeap
+    IsVisible="@isShowHeapDialogVisible"   
+    consoleOutput="@_consoleOutput" 
+    OnClose="CloseShowSequenceHeapDialog"/>
+
+
+
 @code {
     private List<Customer> _customers = new();
     private Customer _editedCustomer = new();
@@ -170,6 +179,9 @@
     private bool isUpdateCustomerDialogVisible = false;
     private bool isUpdateServDialogVisible = false;
     private bool isGenerateDialogVisible = false;
+    private bool isShowHeapDialogVisible = false;
+
+    private string _consoleOutput = string.Empty;
 
     private int _id = 0;
     private string _ecv = "";
@@ -400,6 +412,19 @@
 
     void CloseGenerateDialog() {
         isGenerateDialogVisible = false;
+        StateHasChanged();
+    }
+
+    private void ShowSequenceHeap()
+    {
+        _consoleOutput = HomeService.ShowSequenceHeap();
+        isShowHeapDialogVisible = true;
+        StateHasChanged();
+    }
+
+    private void CloseShowSequenceHeapDialog()
+    {
+        isShowHeapDialogVisible = false;
         StateHasChanged();
     }
 }

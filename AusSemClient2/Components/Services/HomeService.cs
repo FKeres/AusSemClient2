@@ -99,8 +99,7 @@ class HomeService
             numbers.RemoveAt(index);
 
             Customer customer = GenerateCustomer(id);
-            Customer customerInList = new Customer(customer.Id, "xxxxxxxxxx", customer.Name, customer.LastName);
-
+            
             long address = _wholeCustomers.Insert(customer);
 
             CustomerByEcv customerByEcv = new(customer.Id, customer.Ecv, address);
@@ -164,6 +163,44 @@ class HomeService
 
         return stringBuilder.ToString();
 
+    }
+
+    public string ShowSequenceHeap() {
+        int c = 0;
+        string output = $"***** FirstEmpty = {_wholeCustomers.FirstEmpty} ***  FirstPartlyEmpty = {_wholeCustomers.FirstPartlyEmpty}\n";
+
+        foreach(var block in _wholeCustomers.SequenceIterate()) {
+            output += $"******************************NOVÝ BLOK********************************\n";
+            if(block is not null) {
+                output += $"adresa bloku - {block.Address} predchodca - {block.Previous} nasledovnik - {block.Next} valid Count - {block.ValidCount}  \n";
+                
+                for(int k = 0; k < block.ValidCount; ++k) {
+                    output += $"------------------------------------------------------------------------\n";
+                    output += $"    ID - {block.Records[k].Id} EČV - {block.Records[k].Ecv} Meno - {block.Records[k].Name} Priezvisko - {block.Records[k].LastName} \n";
+
+                    for (int i = 0; i < block.Records[k].ValidServiceNum; i++)
+                    {
+                        output += $"        ServiceId - {block.Records[k].ServiceVisit[i].Id} Dátum - {block.Records[k].ServiceVisit[i].Date} Cena - {block.Records[k].ServiceVisit[i].Price}  \n";
+                        
+                        for (int j = 0; j < block.Records[k].ServiceVisit[i].ValidDesc; j++)
+                        {
+                            output += $"            Popis - {block.Records[k].ServiceVisit[i].Description[j]} \n";
+                        }
+                    }
+                    output += $"------------------------------------------------------------------------\n";     
+                }
+
+            } else {
+                output += $"Index {c} - adresa bloku - -1 \n";
+            }
+            
+            output += $"********************************************************************\n";
+            output += "\n";
+            
+            ++c;
+        }
+
+        return output;
     }
 
 }
