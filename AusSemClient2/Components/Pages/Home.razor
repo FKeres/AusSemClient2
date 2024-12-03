@@ -95,6 +95,11 @@
             No customers available.
         </div>
     }
+
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <div class="alert @MessageClass">@Message</div>
+    }
 </div>
 
 <AddDialog 
@@ -180,6 +185,9 @@
     private ServiceVisit _editServ = _unused.CreateInstance();
     private int _editedServNo = -1;
 
+    private string Message { get; set; } = string.Empty;
+    private string MessageClass { get; set; } = "alert-success";
+
     private bool isAddDialogVisible = false;
     private bool isFindByIdDialogVisible = false;
     private bool isFindByEcvDialogVisible = false;
@@ -211,16 +219,36 @@
 
 
     public void AddCustomer(Customer customer) {
-        HomeService.Add(customer.Id, customer.Ecv, customer.Name, customer.LastName);
+        string result = HomeService.Add(customer.Id, customer.Ecv, customer.Name, customer.LastName);
 
-        isAddDialogVisible = false;
+        if (result == "OK")
+        {
+            Message = "Customer successfully added!";
+            MessageClass = "alert-success";
+            isAddDialogVisible = false;
+        }
+        else
+        {
+            Message = result; 
+            MessageClass = "alert-danger";
+        }
+
         StateHasChanged();
     }
 
     public void FindById(int customerId) {
         _customers.Clear();
         _id = customerId;
-        _customers.Add(HomeService.FindById(_id));
+
+        Customer? customer = HomeService.FindById(_id);
+        if(customer is not null) {
+            _customers.Add(customer);
+            Message = string.Empty;
+        } else {
+            Message = $"Customer with ID {_id} does not exist !";
+            MessageClass = "alert-danger";
+        }
+        
 
         isFindByIdDialogVisible = false;
         StateHasChanged();
@@ -228,7 +256,15 @@
 
     public void FindByEcv(string ecv) {
         _customers.Clear();
-        _customers.Add(HomeService.FindByEcv(ecv));
+
+        Customer? customer = HomeService.FindByEcv(ecv);
+        if(customer is not null) {
+            _customers.Add(customer);
+            Message = string.Empty;
+        } else  {
+            Message = $"Customer with ECV {ecv} does not exist !";
+            MessageClass = "alert-danger";
+        }
 
         isFindByEcvDialogVisible = false;
         StateHasChanged();

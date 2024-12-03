@@ -29,49 +29,70 @@ class HomeService
         _customersByEcv = new ExtendibleHash<CustomerByEcv>(500, customerByEcv.CreateInstance(), "CustomerByEcv");
     }
 
-    public void Add(int id, string ecv, string name, string lastName) {
+    public string Add(int id, string ecv, string name, string lastName) {
         long address = -1;
 
-        Customer customer = new(id, ecv, name, lastName);
-        address = _wholeCustomers.Insert(customer);
-
         CustomerById customerById = new(id, ecv, address);
-        _customersById.Insert(customerById);
-
         CustomerByEcv customerByEcv = new(id, ecv, address);
-        _customersByEcv.Insert(customerByEcv);
+
+        if(_customersById.Find(customerById) is not null) {
+            return $"ID {id} already exists!";
+        } else if (_customersByEcv.Find(customerByEcv) is not null ) {
+            return $"ECV {ecv} already exists!";
+        } else {
+            Customer customer = new(id, ecv, name, lastName);
+            address = _wholeCustomers.Insert(customer);
+
+            customerById.Address = address;
+            customerByEcv.Address = address;
+    
+            _customersById.Insert(customerById);
+            _customersByEcv.Insert(customerByEcv);
+
+            return "OK";
+        }
 
     }
 
-    public Customer FindById(int id) {
+    public Customer? FindById(int id) {
         _customerByIdFind.Id = id;
         CustomerById customerByIdFound = _customersById.Find(_customerByIdFind);
 
-        _customerFind.Id = customerByIdFound.Id;
-        _customerFind.Ecv = customerByIdFound.Ecv;
-        Customer customerFound = _wholeCustomers.Get(customerByIdFound.Address, _customerFind);
-        
-        Customer returnCustomer = new();
-        returnCustomer = returnCustomer.CreateInstance();
-        returnCustomer.CopyFrom(customerFound);
-        
-        return returnCustomer;
+        if(customerByIdFound is not null) {
+
+            _customerFind.Id = customerByIdFound.Id;
+            _customerFind.Ecv = customerByIdFound.Ecv;
+            Customer customerFound = _wholeCustomers.Get(customerByIdFound.Address, _customerFind);
+            
+            Customer returnCustomer = new();
+            returnCustomer = returnCustomer.CreateInstance();
+            returnCustomer.CopyFrom(customerFound);
+            
+            return returnCustomer;
+        } 
+
+        return default;
 
     }
 
-    public Customer FindByEcv(string ecv) {
+    public Customer? FindByEcv(string ecv) {
         _customerByEcvFind.Ecv = ecv;
         CustomerByEcv customerByEcvFound = _customersByEcv.Find(_customerByEcvFind);
 
-        _customerFind.Id = customerByEcvFound.Id;
-        _customerFind.Ecv = customerByEcvFound.Ecv;
-        Customer customerFound = _wholeCustomers.Get(customerByEcvFound.Address, _customerFind);
-        
-        Customer returnCustomer = new();
-        returnCustomer = returnCustomer.CreateInstance();
-        returnCustomer.CopyFrom(customerFound);
-        
-        return returnCustomer;
+        if(customerByEcvFound is not null) {
+
+            _customerFind.Id = customerByEcvFound.Id;
+            _customerFind.Ecv = customerByEcvFound.Ecv;
+            Customer customerFound = _wholeCustomers.Get(customerByEcvFound.Address, _customerFind);
+            
+            Customer returnCustomer = new();
+            returnCustomer = returnCustomer.CreateInstance();
+            returnCustomer.CopyFrom(customerFound);
+            
+            return returnCustomer;
+        }
+
+        return default;
 
     }
 
@@ -85,7 +106,6 @@ class HomeService
     public void Generate(int num) {
         int min = 0;
         int max = num;
-        Stopwatch stopwatch = new Stopwatch();
 
         List<int> numbers = new List<int>();
         for (int c = min; c <= max; c++)
@@ -100,27 +120,24 @@ class HomeService
             int id = numbers[index];
             numbers.RemoveAt(index);
 
-            Console.WriteLine($"{k}");
-
             Customer customer = GenerateCustomer(id);
+            CustomerByEcv custEcv = new(customer.Id, customer.Ecv, -1);
+
+            while (_customersByEcv.Find(custEcv) is not null)
+            {
+                custEcv.Ecv = GenerateRandomEcv();
+            }
+
+            customer.Ecv = custEcv.Ecv;
             
-            stopwatch.Restart();
             long address = _wholeCustomers.Insert(customer);
-            stopwatch.Stop();
-            Console.WriteLine($"Insert to Heap - {stopwatch.Elapsed}");
 
             CustomerByEcv customerByEcv = new(customer.Id, customer.Ecv, address);
             CustomerById customerById = new(customer.Id, customer.Ecv, address);
 
-            stopwatch.Restart();
             _customersById.Insert(customerById);
-            stopwatch.Stop();
-            Console.WriteLine($"Insert to Ext ID - {stopwatch.Elapsed}");
 
-            stopwatch.Restart();
             _customersByEcv.Insert(customerByEcv);
-            stopwatch.Stop();
-            Console.WriteLine($"Insert to Ext ECV - {stopwatch.Elapsed}");
             ++k;
         }
     }
@@ -128,7 +145,7 @@ class HomeService
     public Customer GenerateCustomer(int id) {
         string name = GenerateRandomString(5);
         string lastName = GenerateRandomString(10);
-        string ecv = GenerateRandomEcv(id);
+        string ecv = GenerateRandomEcv();
         Customer customer = new(id, ecv, name, lastName);
 
         for(int i = 0; i < customer.ServiceVisit.Length; ++i) {
@@ -161,19 +178,16 @@ class HomeService
 
     }
 
-    private string GenerateRandomEcv(int uniq)
+    private string GenerateRandomEcv()
     {
-        int length = 10 - uniq.ToString().Length;
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        StringBuilder stringBuilder = new StringBuilder(length);
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?áéíóúýĺŕčďľňšťžÁÉÍÓÚÝĹŔČĎĽŇŠŤŽ";
+        StringBuilder stringBuilder = new StringBuilder(10);
 
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < 10; i++)
         {
             int index = _random.Next(chars.Length);
             stringBuilder.Append(chars[index]);
         }
-
-        stringBuilder.Append(uniq.ToString());
 
         return stringBuilder.ToString();
 

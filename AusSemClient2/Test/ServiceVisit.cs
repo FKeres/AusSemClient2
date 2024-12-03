@@ -66,6 +66,12 @@ public class ServiceVisit : IRecord<ServiceVisit>
             memoryStream.Read(priceBytes, 0, sizeof(double));
             _price = BitConverter.ToDouble(priceBytes, 0);
 
+            //fikesk
+            byte[] validDescBytes = new byte[sizeof(int)];
+            memoryStream.Read(validDescBytes, 0, sizeof(int));
+            _validDesc = BitConverter.ToInt32(validDescBytes, 0);
+            //fikesk
+
             for(int i = 0; i < _description.Length; ++i) {
                 byte[] descBytes = new byte[_maxDescSize * sizeof(char)];
                 memoryStream.Read(descBytes, 0, descBytes.Length);
@@ -83,6 +89,9 @@ public class ServiceVisit : IRecord<ServiceVisit>
             memoryStream.Write(BitConverter.GetBytes(_id), 0, sizeof(int));
             memoryStream.Write(BitConverter.GetBytes(_date.Ticks), 0, sizeof(long));
             memoryStream.Write(BitConverter.GetBytes(_price), 0, sizeof(double));
+            //fikesk
+            memoryStream.Write(BitConverter.GetBytes(_validDesc), 0, sizeof(int));
+            //fikesk
 
             foreach (var rec in _description)
             {
@@ -100,9 +109,10 @@ public class ServiceVisit : IRecord<ServiceVisit>
         int idSize = sizeof(int);
         int dateSize = sizeof(long);
         int doubleSize = sizeof(double);
+        int validDescSize = sizeof(int);
         int stringSize = _maxDescSize * sizeof(char) * _description.Length;
 
-        return idSize + dateSize + doubleSize + stringSize;
+        return idSize + dateSize + doubleSize + validDescSize + stringSize;
     }
 
     public override string ToString()

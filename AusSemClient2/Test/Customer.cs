@@ -154,6 +154,9 @@ public class Customer : IRecord<Customer>, IExtendRec
                     sizeof(int) +
                     sizeof(long) +
                     sizeof(double) +
+                    //fikesk
+                    sizeof(int) +
+                    //fikesk
                     20 * sizeof(char) * 10
                 ];
 

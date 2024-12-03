@@ -88,16 +88,17 @@ class ExtendibleHash<T> where T : IExtendRec, IRecord<T>,  new()
         int hashVal = HashItem(byteKey, _actualDepth);
 
         T foundItem = FindElementInBlock(_blockProps[hashVal].Address, item);
-        
-        if(foundItem.KeyUpdated(item)) {
-            //Remove(foundItem);
-            foundItem.Update(item);
-            Insert(foundItem);
-        } else {
-            foundItem.Update(item);
-            _heapFile.WriteBlock(_blockProps[hashVal].Address);
+
+        if(!(foundItem is null)) {
+            if(foundItem.KeyUpdated(item)) {
+                //Remove(foundItem);
+                foundItem.Update(item);
+                Insert(foundItem);
+            } else {
+                foundItem.Update(item);
+                _heapFile.WriteBlock(_blockProps[hashVal].Address);
+            }
         }
-        
     }
 
     //actualizes validCount of blocks on provided indexes
@@ -140,16 +141,20 @@ class ExtendibleHash<T> where T : IExtendRec, IRecord<T>,  new()
 
     }
 
-    public T Find(T item) {
+    public T? Find(T item) {
         byte[] byteKey = item.GetByteKey();
         Array.Reverse(byteKey);
 
         int hashVal = HashItem(byteKey, _actualDepth);
 
+        if(_blockProps[hashVal].Address == -1) {
+            return default;
+        }
+
         return FindElementInBlock(_blockProps[hashVal].Address, item);
     }
 
-    public T FindElementInBlock(long address, T item) {
+    public T? FindElementInBlock(long address, T item) {
         _heapFile.ReadBlock(address);
 
         for(int i = 0; i < _heapFile.Block.ValidCount; ++i) {
@@ -158,7 +163,7 @@ class ExtendibleHash<T> where T : IExtendRec, IRecord<T>,  new()
             }
         }
 
-        throw new Exception($"This item {item.ToString()} is not in block {_heapFile.Block.Address}");
+        return default;
 
     }
 
