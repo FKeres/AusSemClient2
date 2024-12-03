@@ -20,7 +20,7 @@ class HomeService
         Customer customer = new();
 
         _customerFind = customer.CreateInstance();
-        _wholeCustomers = new HeapFile<Customer>(9000, customer.CreateInstance(), "Customers");
+        _wholeCustomers = new HeapFile<Customer>(8000, customer.CreateInstance(), "Customers");
 
         CustomerById customerById = new();
         _customersById = new ExtendibleHash<CustomerById>(500, customerById.CreateInstance(), "CustomerById");
