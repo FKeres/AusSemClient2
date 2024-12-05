@@ -126,7 +126,7 @@ public class ServiceVisit : IRecord<ServiceVisit>
     }
 
     public void AddDescription(string description) {
-        if(_validDesc < description.Length) {
+        if(_validDesc < _description.Length) {
             _description[_validDesc] = description;
             ++_validDesc;
         }

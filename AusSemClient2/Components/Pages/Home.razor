@@ -50,6 +50,9 @@
                                             <button class="btn btn-primary btn-sm mt-3" @onclick="() => ShowUpdateServDialog(customer, index)">
                                                 Update Service Visit
                                             </button>
+                                            <button class="btn btn-danger btn-sm mt-3" @onclick="() => DeleteServiceVisit(customer, index)">
+                                                Delete Service Visit
+                                            </button>
                                             <div class="mb-2">
                                                 <strong>Date:</strong>
                                                 <input type="date" class="form-control form-control-sm" value="@customer.ServiceVisit[i].Date.ToString("yyyy-MM-dd")" readonly/>
@@ -198,6 +201,7 @@
     private bool isShowHeapDialogVisible = false;
 
     private string _consoleOutput = string.Empty;
+    private bool _updateServVisit = false;
 
     private int _id = 0;
     private string _ecv = "";
@@ -282,8 +286,22 @@
 
     public void UpdateServiceVisit(ServiceVisit serviceVisit) {
         _editServ.CopyFrom(serviceVisit);
-        _editedCustomer.ServiceVisit[_editedServNo].CopyFrom(_editServ);
+        
+        if(_updateServVisit) {
+            _editedCustomer.ServiceVisit[_editedServNo].CopyFrom(_editServ);
+        } else {
+            _editedCustomer.AddServVisit(_editServ);
+        }
+
         HomeService.UpdateCustomer(_editedCustomer);
+        
+    }
+
+    public void DeleteServiceVisit(Customer customer, int servNo) {
+
+        customer.DeleteServiceVisit(servNo);
+        UpdateCustomer(customer);
+
     }
 
     public void Generate(int num) {
@@ -377,7 +395,17 @@
 
     void ShowUpdateServDialog(Customer customer, int servNo) {
         _editedCustomer = customer;
-        _editServ = customer.ServiceVisit[servNo];
+
+        if(_editedCustomer.ValidServiceNum <= servNo) {
+            ServiceVisit serviceVisit = new();
+            _editServ = serviceVisit.CreateInstance();
+            customer.ServiceVisit[servNo].CopyFrom(_editServ);
+            _updateServVisit = false;
+        } else {
+            _editServ = customer.ServiceVisit[servNo];
+            _updateServVisit = true;
+        }
+        
         _editedServNo = servNo;
 
         if(customer.ServiceVisit[servNo].Description[0] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 0) {

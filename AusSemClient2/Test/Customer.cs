@@ -45,6 +45,19 @@ public class Customer : IRecord<Customer>, IExtendRec
         }
     }
 
+    public void DeleteServiceVisit(int servNo) {
+        if(_validServiceNum > servNo) {
+            SwapServices(servNo);
+            --_validServiceNum;
+        }
+    }
+
+    public void SwapServices(int index) {
+        var tmp = _serviceVisit[index];
+        _serviceVisit[index] = _serviceVisit[_validServiceNum -1];
+        _serviceVisit[_validServiceNum -1] = tmp;
+    }
+
     public bool Equals()
     {
         return false;
