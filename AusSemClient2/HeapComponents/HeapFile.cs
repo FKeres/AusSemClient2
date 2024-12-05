@@ -24,7 +24,7 @@ class HeapFile<T> where T:IRecord<T>, new()
 
         _block = new(size, item.GetSize());
 
-        _fs = new FileStream(_filePath, FileMode.Create, FileAccess.ReadWrite);
+        _fs = new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
     }
 
@@ -263,5 +263,20 @@ class HeapFile<T> where T:IRecord<T>, new()
         
         return address;
     }
+
+    public string GetHeader() {
+        return "FIRSTEMPTY,FIRSTPARTLYEMPTY,SIZE";
+    }
     
+    public string GetBody() {
+        return $"{_firstEmpty},{_firstPartlyEmpty},{_size}";
+    }
+
+    public void Load(string body) {
+        string[] parts = body.Split(',');
+        _firstEmpty = int.Parse(parts[0]);
+        _firstPartlyEmpty = int.Parse(parts[1]);
+        _size = int.Parse(parts[2]);
+    }
+
 }

@@ -11,6 +11,9 @@
 <button class="btn btn-info" @onclick="ShowFindByIdDialog">Find by ID</button>
 <button class="btn btn-info" @onclick="ShowFindByEcvDialog">Find by EČV</button>
 <button class="btn btn-dark" @onclick="ShowGenerateDialog">Generate</button>
+<button class="btn btn-dark" @onclick="SaveState">Save</button>
+<button class="btn btn-dark" @onclick="LoadState">Load</button>
+
 <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         Sequence
@@ -306,6 +309,18 @@
 
     public void Generate(int num) {
         HomeService.Generate(num);
+    }
+
+    public void SaveState() {
+        HomeService.SaveState();
+        Message = "State saved!";
+        MessageClass = "alert-success";
+    }
+
+    public void LoadState() {
+        HomeService.LoadState();
+        Message = "State loaded!";
+        MessageClass = "alert-success";
     }
 
     void ShowAddCustomerDialog()

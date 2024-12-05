@@ -399,4 +399,40 @@ class ExtendibleHash<T> where T : IExtendRec, IRecord<T>,  new()
     public void CloseFile() {
         _heapFile.CloseFile();
     }
+
+    public string GetHeader() {
+        string result = "ACTUALDEPTH,";
+
+        for (int i = 0; i < _blockProps.Length; i++)
+        {
+            result = result + $"ADDRESS{i},BLOCKDEPTH{i},VALIDCOUNT{i},";
+        }
+
+        return result;
+    }
+
+    public string GetBody() {
+        string result = $"{_actualDepth},";
+
+        for (int i = 0; i < _blockProps.Length; i++)
+        {
+            result = result + $"{_blockProps[i].Address},{_blockProps[i].BlockDepth},{_blockProps[i].ValidCount},";
+        }
+
+        return result;
+    }
+
+    public void Load(string body) {
+        string[] parts = body.Split(',');
+        _actualDepth = int.Parse(parts[0]);
+
+        int index = 1;
+        for (int i = 0; i < _blockProps.Length; i++)
+        {
+            _blockProps[i].Address = int.Parse(parts[index++]);
+            _blockProps[i].BlockDepth = int.Parse(parts[index++]);
+            _blockProps[i].ValidCount = int.Parse(parts[index++]);
+        }
+    }
+
 }

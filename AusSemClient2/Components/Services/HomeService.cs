@@ -293,4 +293,38 @@ class HomeService
         return output;
     }
 
+    public void SaveState() {
+         using (StreamWriter writer = new StreamWriter("Metadata"))
+        {
+            writer.WriteLine(_wholeCustomers.GetHeader());
+            writer.WriteLine(_wholeCustomers.GetBody());
+            writer.WriteLine(_customersById.GetHeader());
+            writer.WriteLine(_customersById.GetBody());
+            writer.WriteLine(_customersByEcv.GetHeader());
+            writer.WriteLine(_customersByEcv.GetBody());
+        }
+    }
+
+    public void LoadState() {
+         using (StreamReader reader = new StreamReader("Metadata"))
+        {
+            string body;
+            reader.ReadLine();
+            body = reader.ReadLine();
+
+            _wholeCustomers.Load(body);
+
+            reader.ReadLine();
+            body = reader.ReadLine();
+
+            _customersById.Load(body);
+
+            reader.ReadLine();
+            body = reader.ReadLine();
+
+            _customersByEcv.Load(body);
+
+        }
+    }
+
 }
