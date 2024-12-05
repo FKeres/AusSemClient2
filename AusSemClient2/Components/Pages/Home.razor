@@ -76,7 +76,7 @@
 
                             @if (customer.ValidServiceNum < customer.ServiceVisit.Length)
                             {
-                                <button class="btn btn-success btn-sm mt-3" @onclick="() => ShowAddServiceVisitDialog(customer)">
+                                <button class="btn btn-success btn-sm mt-3" @onclick="() => ShowUpdateServDialog(customer, customer.ValidServiceNum)">
                                     Add Service Visit
                                 </button>
                             }
@@ -380,60 +380,60 @@
         _editServ = customer.ServiceVisit[servNo];
         _editedServNo = servNo;
 
-        if(customer.ServiceVisit[servNo].Description[0] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[0] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 0) {
             _description1 = "";
         } else {
             _description1 = customer.ServiceVisit[servNo].Description[0];
         }
         
-        if(customer.ServiceVisit[servNo].Description[1] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[1] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 1) {
             _description2 = "";
         } else {
             _description2 = customer.ServiceVisit[servNo].Description[1];
         }
 
-        if(customer.ServiceVisit[servNo].Description[2] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[2] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 2) {
             _description3 = "";
         } else {
             _description3 = customer.ServiceVisit[servNo].Description[2];
         }
 
-        if(customer.ServiceVisit[servNo].Description[3] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[3] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 3) {
             _description4 = "";
         } else {
             _description4 = customer.ServiceVisit[servNo].Description[3];
         }
-        if(customer.ServiceVisit[servNo].Description[4] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[4] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 4) {
             _description5 = "";
         } else {
             _description5 = customer.ServiceVisit[servNo].Description[4];
         }
         
-        if(customer.ServiceVisit[servNo].Description[5] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[5] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 5) {
             _description6 = "";
         } else {
             _description6 = customer.ServiceVisit[servNo].Description[5];
         }
 
-        if(customer.ServiceVisit[servNo].Description[6] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[6] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 6) {
             _description7 = "";
         } else {
             _description7 = customer.ServiceVisit[servNo].Description[6];
         }
 
-        if(customer.ServiceVisit[servNo].Description[7] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[7] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 7) {
             _description8 = "";
         } else {
             _description8 = customer.ServiceVisit[servNo].Description[7];
         }
 
-        if(customer.ServiceVisit[servNo].Description[8] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[8] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 8) {
             _description9 = "";
         } else {
             _description9 = customer.ServiceVisit[servNo].Description[8];
         }
 
-        if(customer.ServiceVisit[servNo].Description[9] == "xxxxxxxxxx") {
+        if(customer.ServiceVisit[servNo].Description[9] == "xxxxxxxxxx" || customer.ServiceVisit[servNo].ValidDesc <= 9) {
             _description10 = "";
         } else {
             _description10 = customer.ServiceVisit[servNo].Description[8];

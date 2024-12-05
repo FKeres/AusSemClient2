@@ -20,7 +20,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="description1" class="form-label">Description 1</label>
-                    <input type="text" class="form-control" id="description1" value="@Description1" @oninput="e => OnInputChanged(e, 1)" maxlength="20" />
+                    <input type="text" class="form-control" id="description1" value="@Description1" @oninput="e => OnInputChanged(e, 1)" maxlength="20"  readonly="@IsReadOnly1"/>
                 </div>
                 <div class="mb-3">
                     <label for="description2" class="form-label">Description 2</label>
@@ -85,6 +85,7 @@
     [Parameter] public string Description9 { get; set; } = "";
     [Parameter] public string Description10 { get; set; } = "";
 
+    private bool IsReadOnly1 {get; set; } = false;
     private bool IsReadOnly2 { get; set; } = true;
     private bool IsReadOnly3 { get; set; } = true;
     private bool IsReadOnly4 { get; set; } = true;
@@ -94,6 +95,27 @@
     private bool IsReadOnly8 { get; set; } = true;
     private bool IsReadOnly9 { get; set; } = true;
     private bool IsReadOnly10 { get; set; } = true;
+
+/*
+    private void InitializeReadOnlyStates()
+    {
+        IsReadOnly1 = string.IsNullOrWhiteSpace(Description1);
+        IsReadOnly2 = string.IsNullOrWhiteSpace(Description2);
+        IsReadOnly3 = string.IsNullOrWhiteSpace(Description3);
+        IsReadOnly4 = string.IsNullOrWhiteSpace(Description4);
+        IsReadOnly5 = string.IsNullOrWhiteSpace(Description5);
+        IsReadOnly6 = string.IsNullOrWhiteSpace(Description6);
+        IsReadOnly7 = string.IsNullOrWhiteSpace(Description7);
+        IsReadOnly8 = string.IsNullOrWhiteSpace(Description8);
+        IsReadOnly9 = string.IsNullOrWhiteSpace(Description9);
+        IsReadOnly10 = string.IsNullOrWhiteSpace(Description10);
+    }
+*/
+    protected override void OnParametersSet()
+    {
+        //InitializeReadOnlyStates();
+        UpdateReadOnlyStates();
+    }
 
     private void CloseDialog()
     {
@@ -112,23 +134,23 @@
             ServiceVisit serviceVisit = new(Id, Date, Price);
             if(!string.IsNullOrWhiteSpace(Description1)){
                 serviceVisit.AddDescription(Description1);
-                if(!IsReadOnly2) {
+                if(!string.IsNullOrEmpty(Description2)) {
                     serviceVisit.AddDescription(Description2);
-                    if(!IsReadOnly3) {
+                    if(!string.IsNullOrEmpty(Description3)) {
                         serviceVisit.AddDescription(Description3);
-                        if(!IsReadOnly4) {
+                        if(!string.IsNullOrEmpty(Description4)) {
                             serviceVisit.AddDescription(Description4);
-                            if(!IsReadOnly5) {
+                            if(!string.IsNullOrEmpty(Description5)) {
                                 serviceVisit.AddDescription(Description5);
-                                if(!IsReadOnly6) {
+                                if(!string.IsNullOrEmpty(Description6)) {
                                     serviceVisit.AddDescription(Description6);
-                                    if(!IsReadOnly7){
+                                    if(!string.IsNullOrEmpty(Description7)){
                                         serviceVisit.AddDescription(Description7);
-                                        if(!IsReadOnly8) {
+                                        if(!string.IsNullOrEmpty(Description8)) {
                                             serviceVisit.AddDescription(Description8);
-                                            if(!IsReadOnly9) {
+                                            if(!string.IsNullOrEmpty(Description9)) {
                                                 serviceVisit.AddDescription(Description9);
-                                                if(!IsReadOnly10) {
+                                                if(!string.IsNullOrEmpty(Description10)) {
                                                     serviceVisit.AddDescription(Description10);
                                                 }
                                             }
@@ -146,68 +168,62 @@
         CloseDialog();
     }
 
-/*
-    private void UpdateReadOnlyState(ChangeEventArgs e)
-    {
-        IsReadOnly2 = string.IsNullOrWhiteSpace(Description1);
-        IsReadOnly3 = string.IsNullOrWhiteSpace(Description2);
-        IsReadOnly4 = string.IsNullOrWhiteSpace(Description3);
-        IsReadOnly5 = string.IsNullOrWhiteSpace(Description4);
-        IsReadOnly6 = string.IsNullOrWhiteSpace(Description1);
-        IsReadOnly7 = string.IsNullOrWhiteSpace(Description2);
-        IsReadOnly8 = string.IsNullOrWhiteSpace(Description3);
-        IsReadOnly9 = string.IsNullOrWhiteSpace(Description4);
-        IsReadOnly10 = string.IsNullOrWhiteSpace(Description4);
-        
-    }
-*/
     private void OnInputChanged(ChangeEventArgs e, int descriptionNumber)
     {
+        
         var newValue = e.Value?.ToString() ?? string.Empty;
 
         switch (descriptionNumber)
         {
             case 1:
                 Description1 = newValue;
-                IsReadOnly2 = string.IsNullOrWhiteSpace(Description1);
                 break;
             case 2:
                 Description2 = newValue;
-                IsReadOnly3 = string.IsNullOrWhiteSpace(Description2);
                 break;
             case 3:
                 Description3 = newValue;
-                IsReadOnly4 = string.IsNullOrWhiteSpace(Description3);
                 break;
             case 4:
                 Description4 = newValue;
-                IsReadOnly5 = string.IsNullOrWhiteSpace(Description4);
                 break;
             case 5:
                 Description5 = newValue;
-                IsReadOnly6 = string.IsNullOrWhiteSpace(Description5);
                 break;
             case 6:
                 Description6 = newValue;
-                IsReadOnly7 = string.IsNullOrWhiteSpace(Description6);
                 break;
             case 7:
                 Description7 = newValue;
-                IsReadOnly8 = string.IsNullOrWhiteSpace(Description7);
                 break;
             case 8:
                 Description8 = newValue;
-                IsReadOnly9 = string.IsNullOrWhiteSpace(Description8);
                 break;
             case 9:
                 Description9 = newValue;
-                IsReadOnly10 = string.IsNullOrWhiteSpace(Description9);
                 break;
             case 10:
                 Description10 = newValue;
                 break;
         }
+        
+        UpdateReadOnlyStates();
 
         StateHasChanged();
     }
+
+    private void UpdateReadOnlyStates()
+    {
+        IsReadOnly1 = !(string.IsNullOrWhiteSpace(Description1) || string.IsNullOrWhiteSpace(Description2));
+        IsReadOnly2 = !((!string.IsNullOrWhiteSpace(Description2) && string.IsNullOrWhiteSpace(Description3)) || (!string.IsNullOrWhiteSpace(Description1) && string.IsNullOrWhiteSpace(Description2)));
+        IsReadOnly3 = !((!string.IsNullOrWhiteSpace(Description3) && string.IsNullOrWhiteSpace(Description4)) || (!string.IsNullOrWhiteSpace(Description2) && string.IsNullOrWhiteSpace(Description3)));
+        IsReadOnly4 = !((!string.IsNullOrWhiteSpace(Description4) && string.IsNullOrWhiteSpace(Description5)) || (!string.IsNullOrWhiteSpace(Description3) && string.IsNullOrWhiteSpace(Description4)));
+        IsReadOnly5 = !((!string.IsNullOrWhiteSpace(Description5) && string.IsNullOrWhiteSpace(Description6)) || (!string.IsNullOrWhiteSpace(Description4) && string.IsNullOrWhiteSpace(Description5)));
+        IsReadOnly6 = !((!string.IsNullOrWhiteSpace(Description6) && string.IsNullOrWhiteSpace(Description7)) || (!string.IsNullOrWhiteSpace(Description5) && string.IsNullOrWhiteSpace(Description6)));
+        IsReadOnly7 = !((!string.IsNullOrWhiteSpace(Description7) && string.IsNullOrWhiteSpace(Description8)) || (!string.IsNullOrWhiteSpace(Description6) && string.IsNullOrWhiteSpace(Description7)));
+        IsReadOnly8 = !((!string.IsNullOrWhiteSpace(Description8) && string.IsNullOrWhiteSpace(Description9)) || (!string.IsNullOrWhiteSpace(Description7) && string.IsNullOrWhiteSpace(Description8)));
+        IsReadOnly9 = !((!string.IsNullOrWhiteSpace(Description9) && string.IsNullOrWhiteSpace(Description10)) || (!string.IsNullOrWhiteSpace(Description8) && string.IsNullOrWhiteSpace(Description9)));
+        IsReadOnly10 = string.IsNullOrWhiteSpace(Description9);
+    }
+
 }
