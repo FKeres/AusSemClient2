@@ -24,7 +24,7 @@ class HeapFile<T> where T:IRecord<T>, new()
 
         _block = new(size, item.GetSize());
 
-        _fs = new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        _fs = new FileStream(_filePath, FileMode.Create, FileAccess.ReadWrite);
 
     }
 
@@ -277,6 +277,39 @@ class HeapFile<T> where T:IRecord<T>, new()
         _firstEmpty = int.Parse(parts[0]);
         _firstPartlyEmpty = int.Parse(parts[1]);
         _size = int.Parse(parts[2]);
+    }
+
+    public void SaveState()
+    {
+        string savePath = _filePath + "-save";
+
+        _fs?.Close();
+
+        File.Copy(_filePath, savePath, overwrite: true);
+
+        _fs = new FileStream(_filePath, FileMode.Open, FileAccess.ReadWrite);
+
+        Console.WriteLine($"State saved to {savePath}");
+    }
+
+    public void LoadState()
+    {
+        string savePath = _filePath + "-save";
+
+        if (File.Exists(savePath))
+        {
+            _fs?.Close();
+
+            File.Copy(savePath, _filePath, overwrite: true);
+
+            _fs = new FileStream(_filePath, FileMode.Open, FileAccess.ReadWrite);
+
+            Console.WriteLine($"State loaded from {savePath}");
+        }
+        else
+        {
+            Console.WriteLine($"Save file not found: {savePath}");
+        }
     }
 
 }

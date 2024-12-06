@@ -303,10 +303,15 @@ class HomeService
             writer.WriteLine(_customersByEcv.GetHeader());
             writer.WriteLine(_customersByEcv.GetBody());
         }
+
+        _wholeCustomers.SaveState();
+        _customersById.HeapFile.SaveState();
+        _customersByEcv.HeapFile.SaveState();
+
     }
 
     public void LoadState() {
-         using (StreamReader reader = new StreamReader("Metadata"))
+        using (StreamReader reader = new StreamReader("Metadata"))
         {
             string body;
             reader.ReadLine();
@@ -325,6 +330,10 @@ class HomeService
             _customersByEcv.Load(body);
 
         }
+
+        _wholeCustomers.LoadState();
+        _customersById.HeapFile.LoadState();
+        _customersByEcv.HeapFile.LoadState();
     }
 
 }
