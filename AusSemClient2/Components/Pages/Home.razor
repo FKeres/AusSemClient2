@@ -13,6 +13,15 @@
 <button class="btn btn-dark" @onclick="ShowGenerateDialog">Generate</button>
 <button class="btn btn-dark" @onclick="SaveState">Save</button>
 <button class="btn btn-dark" @onclick="LoadState">Load</button>
+<div class="btn-group">
+    <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        Test
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" @onclick="TestHeap">TesHeap</a></li>
+        <li><a class="dropdown-item" @onclick="TestHash">TesHash</a></li>
+    </ul>
+</div>
 
 <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -321,6 +330,26 @@
         HomeService.LoadState();
         Message = "State loaded!";
         MessageClass = "alert-success";
+    }
+
+    public void TestHeap() {
+        string result = HomeService.TestHeap();
+        Message = result;
+        if(result == "Test finished Sucessfully") {
+            MessageClass = "alert-success";
+        } else {
+            MessageClass = "alert-danger";
+        }
+    }
+
+    public void TestHash() {
+        string result = HomeService.TestHeap();
+        Message = result;
+        if(result == "Test finished Sucessfully") {
+            MessageClass = "alert-success";
+        } else {
+            MessageClass = "alert-danger";
+        }
     }
 
     void ShowAddCustomerDialog()

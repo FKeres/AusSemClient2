@@ -22,7 +22,7 @@ class TestExtend
         _random = new Random(seed);
     }
 
-    public bool TestOperationsKont() {
+    public string TestOperationsKont() {
         int operation;
 
         Stopwatch stopwatch = new Stopwatch();
@@ -108,6 +108,17 @@ class TestExtend
                 }
                 stopwatch.Stop();
             }
+
+            if(i%1000 == 0) {
+
+                for(int c = 0; c < customers.Count; ++c) {
+                    var foundCustomer = _extendibleHash.Find(customers[c]);
+                    if(foundCustomer.ToStringFull() != customers[c].ToStringFull()) {
+                        return $"This customer {customers[c].ToStringFull()} has not the same fields as {foundCustomer.ToStringFull()}";
+                    }
+                }
+
+            }
             ++i;
         }
 
@@ -115,14 +126,14 @@ class TestExtend
         for(int c = 0; c < customers.Count; ++c) {
             var foundCustomer = _extendibleHash.Find(customers[c]);
             if(foundCustomer.ToStringFull() != customers[c].ToStringFull()) {
-                throw new Exception($"This customer {customers[c].ToStringFull()} has not the same fields as {foundCustomer.ToStringFull()}");
+                return $"This customer {customers[c].ToStringFull()} has not the same fields as {foundCustomer.ToStringFull()}";
             }
         }
         Console.WriteLine("FIND FINISH");
 
         _extendibleHash.CloseFile();
 
-        return false;
+        return $"Test finished Sucessfully";
     }
 
     public int GenerateOperation() {

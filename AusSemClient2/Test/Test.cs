@@ -109,7 +109,7 @@ class Test
     }
     */
 
-    public bool TestOperationsKont() {
+    public string TestOperationsKont() {
         int operation;
 
         Stopwatch stopwatch = new Stopwatch();
@@ -164,6 +164,13 @@ class Test
                 ++j;
             } else if (operation == 0 ){
                 stopwatch.Start();
+                if(customers.Count > 0) {
+                    int randIndex = _random.Next(customers.Count);
+                    var foundCustomer = _heapFile.Get(addresses[randIndex], customers[randIndex]);
+                    if(foundCustomer is null ) {
+                        return $"customer is null at address {addresses[randIndex]} and customer {customers[randIndex]}";
+                    }
+                }
                 stopwatch.Stop();
             } else {
                 stopwatch.Start();
@@ -175,6 +182,17 @@ class Test
                 }
                 stopwatch.Stop();
             }
+
+            if(i%1000 == 0) {
+
+                for(int c = 0; c < customers.Count; ++c) {
+                    var foundCustomer = _heapFile.Get(addresses[c], customers[c]);
+                    if(foundCustomer.ToStringFull() != customers[c].ToStringFull()) {
+                        return $"This customer {customers[c].ToStringFull()} has not the same fields as {foundCustomer.ToStringFull()}";
+                    }
+                }
+
+            }
             ++i;
         }
 
@@ -183,7 +201,7 @@ class Test
         for(int c = 0; c < customers.Count; ++c) {
             var foundCustomer = _heapFile.Get(addresses[c], customers[c]);
             if(foundCustomer.ToStringFull() != customers[c].ToStringFull()) {
-                throw new Exception($"This customer {customers[c].ToStringFull()} has not the same fields as {foundCustomer.ToStringFull()}");
+                return $"This customer {customers[c].ToStringFull()} has not the same fields as {foundCustomer.ToStringFull()}";
             }
         }
 
@@ -193,7 +211,7 @@ class Test
 
         _heapFile.CloseFile();
 
-        return false;
+        return $"Test finished Sucessfully";
     }
 
     public int GenerateOperation() {

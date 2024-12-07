@@ -4,6 +4,7 @@ using System.Text;
 class HomeService
 {
     private readonly Random _random  =  new Random();
+    private int _lastGeneratedId = 0;
 
     private HeapFile<Customer> _wholeCustomers;
     private ExtendibleHash<CustomerById> _customersById;
@@ -104,8 +105,10 @@ class HomeService
     }
 
     public void Generate(int num) {
-        int min = 0;
-        int max = num;
+        int min = _lastGeneratedId;
+        int max = num + _lastGeneratedId;
+
+        _lastGeneratedId = num + _lastGeneratedId; 
 
         List<int> numbers = new List<int>();
         for (int c = min; c <= max; c++)
@@ -334,6 +337,16 @@ class HomeService
         _wholeCustomers.LoadState();
         _customersById.HeapFile.LoadState();
         _customersByEcv.HeapFile.LoadState();
+    }
+
+    public string TestHeap() {
+        Test test = new(20000, 5000, "Dummy");
+        return test.TestOperationsKont();
+    }
+
+    public string TestExtend() {
+        TestExtend test = new(20000, 5000, "Dummy");
+        return test.TestOperationsKont();
     }
 
 }
