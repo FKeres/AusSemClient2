@@ -429,6 +429,7 @@ class ExtendibleHash<T> where T : IExtendRec, IRecord<T>,  new()
         int index = 1;
         for (int i = 0; i < _blockProps.Length; i++)
         {
+            _blockProps[i] = new  BlockProps(-1, -1, -1);
             _blockProps[i].Address = int.Parse(parts[index++]);
             _blockProps[i].BlockDepth = int.Parse(parts[index++]);
             _blockProps[i].ValidCount = int.Parse(parts[index++]);

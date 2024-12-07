@@ -158,6 +158,8 @@ class HeapFile<T> where T:IRecord<T>, new()
                 _firstPartlyEmpty = _block.Address;
                 WriteBlock(address);
                 ActualizeBlockReferences(_block.Next, _block.Address, null);
+            } else {
+                WriteBlock(address);
             }
 
         }
@@ -176,14 +178,17 @@ class HeapFile<T> where T:IRecord<T>, new()
             if(actualAddress >= 0) {
                 ReadBlock(actualAddress);
                 if(IsLast(_fs.Length, _block.Address) && _block.IsEmpty()) {
-                    _firstEmpty = _block.Next;
-                    _block.Next = -1;
-
-                    if(_firstPartlyEmpty == _block.Address) {
-                        _firstPartlyEmpty = _block.Next;
+                    
+                    if(_firstEmpty == _block.Address) {
+                        _firstEmpty = _block.Next;
                     }
 
-                    ActualizeBlockReferences(_firstEmpty, -1, null);
+                    long next = _block.Next;
+                    long previous = _block.Previous;
+
+                    ActualizeBlockReferences(previous, null, next);
+                    ActualizeBlockReferences(next, previous, null);
+                    
                     _fs.SetLength(actualAddress);
                 } else {
                     break;
