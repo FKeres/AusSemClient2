@@ -28,6 +28,11 @@ class HeapFile<T> where T:IRecord<T>, new()
 
     }
 
+
+    /// <summary>
+    /// Reads data from given address
+    /// </summary>
+    /// <param name="address"></param>
     public void ReadBlock(long address) {
         _fs.Seek(address, SeekOrigin.Begin);
         int actualBlockSize = _block.GetSize();
@@ -36,6 +41,10 @@ class HeapFile<T> where T:IRecord<T>, new()
         _block.FromByteArray(blockBytes);
     }
 
+    /// <summary>
+    /// writes data to block at given addreaa
+    /// </summary>
+    /// <param name="address"></param>
     public void WriteBlock(long address) {
         _fs.Seek(address, SeekOrigin.Begin);
         byte[] updatedBlockBytes = _block.GetByteArray();
@@ -43,16 +52,23 @@ class HeapFile<T> where T:IRecord<T>, new()
     }
 
 
+    /// <summary>
+    /// inserts record to block primarly to partly empty and empty block
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     public long Insert(T item) {
         long address = -1;
         bool written = false;
 
+        //checks if partly empty block exists 
         if (_firstPartlyEmpty != -1) {
             address = _firstPartlyEmpty;
             ReadBlock(_firstPartlyEmpty);
 
             _block.Insert(item);
 
+            //if partly empty after insert is full than is removed from partly empty
             if (_block.IsFull()) {
                 _firstPartlyEmpty = _block.Next;
                 _block.Next = -1;
@@ -74,6 +90,7 @@ class HeapFile<T> where T:IRecord<T>, new()
 
             _firstEmpty = _block.Next;
 
+            //if empty block after insert is not full than becomes first partly empty
             if(!_block.IsFull()) {
                 if (FirstPartlyEmptyIsEmpty()) {
                     _firstPartlyEmpty = _block.Address;
@@ -95,6 +112,7 @@ class HeapFile<T> where T:IRecord<T>, new()
 
             address = _block.Address;
 
+            //if empty block after insert is not full than becomes first partly empty
             if(!_block.IsFull()) {
                 if (FirstPartlyEmptyIsEmpty()) {
                     _firstPartlyEmpty = _block.Address;
@@ -107,6 +125,11 @@ class HeapFile<T> where T:IRecord<T>, new()
         return address;
     }
 
+    /// <summary>
+    /// inserts record to given address
+    /// </summary>
+    /// <param name="address"></param>
+    /// <param name="item"></param>
     public void InsertAtAddress(long address, T item) {
         ReadBlock(address);
         _block.Insert(item);
@@ -114,6 +137,12 @@ class HeapFile<T> where T:IRecord<T>, new()
     }
 
 
+    /// <summary>
+    /// returns item from given address
+    /// </summary>
+    /// <param name="address"></param>
+    /// <param name="item"></param>
+    /// <returns></returns>
     public T Get(long address, T item) {
        
         ReadBlock(address);
@@ -121,6 +150,11 @@ class HeapFile<T> where T:IRecord<T>, new()
         return _block.Get(item);
     }
 
+    /// <summary>
+    /// removes given item at given address
+    /// </summary>
+    /// <param name="address"></param>
+    /// <param name="item"></param>
     public void Remove(long address, T item) {
 
         ReadBlock(address);
@@ -136,7 +170,9 @@ class HeapFile<T> where T:IRecord<T>, new()
                 if(_firstPartlyEmpty == _block.Address) {
                     _firstPartlyEmpty = _block.Next;
                 }
+                //if is last than removed entirely block
                 _fs.SetLength(address);
+                //removes empty blocks from end of the file
                 CLearEnd();
             } else {
                 if(_firstPartlyEmpty == _block.Address) {
@@ -153,6 +189,7 @@ class HeapFile<T> where T:IRecord<T>, new()
             
         } else if (_block.IsPartlyEmpty()) {
             
+            //if already was partly empty no need to actualize references
             if(!wasPartlyEmpty) {
                 _block.Next = _firstPartlyEmpty;
                 _firstPartlyEmpty = _block.Address;
@@ -165,12 +202,20 @@ class HeapFile<T> where T:IRecord<T>, new()
         }
     }
 
+    /// <summary>
+    /// updates items attributes
+    /// </summary>
+    /// <param name="address"></param>
+    /// <param name="item"></param>
     public void Update(long address, T item) {
         T found = Get(address, item);
         found.Update(item);
         WriteBlock(address);
     }
 
+    /// <summary>
+    /// removes empty blocks from end of the file
+    /// </summary>
     private void CLearEnd() {
         long actualAddress = _fs.Position - _block.GetSize();
 
@@ -179,6 +224,7 @@ class HeapFile<T> where T:IRecord<T>, new()
                 ReadBlock(actualAddress);
                 if(IsLast(_fs.Length, _block.Address) && _block.IsEmpty()) {
                     
+                    //if is first empty than next is new first empty
                     if(_firstEmpty == _block.Address) {
                         _firstEmpty = _block.Next;
                     }
@@ -186,11 +232,13 @@ class HeapFile<T> where T:IRecord<T>, new()
                     long next = _block.Next;
                     long previous = _block.Previous;
 
+                    //removed from empty references
                     ActualizeBlockReferences(previous, null, next);
                     ActualizeBlockReferences(next, previous, null);
                     
                     _fs.SetLength(actualAddress);
                 } else {
+                    //ends if is not last or is not empty 
                     break;
                 }
                 actualAddress -= _block.GetSize();
@@ -202,6 +250,7 @@ class HeapFile<T> where T:IRecord<T>, new()
 
     }
 
+    //actualizes block references to next and previous at given address ignored if address is -1
     private void ActualizeBlockReferences(long address, long? previous, long? next) {
         if(address >= 0) {
             ReadBlock(address);
@@ -218,6 +267,7 @@ class HeapFile<T> where T:IRecord<T>, new()
         }
     }
 
+    //sequence iterares throught heap file
     public IEnumerable<Block<T>> SequenceIterate(){
 
         long fileSize = _fs.Length;
@@ -247,11 +297,18 @@ class HeapFile<T> where T:IRecord<T>, new()
         return address + _block.GetSize() == fileLength;
     }
 
+    /// <summary>
+    /// closes the file
+    /// </summary>
     public void CloseFile() {
         _fs?.Close();
         _fs = null;
     }
 
+    /// <summary>
+    /// creates new block at the end of file and returns blocks address
+    /// </summary>
+    /// <returns></returns>
     public long CreateBlock() {
         long address = -1;
         _fs.Seek(0, SeekOrigin.End);
@@ -269,14 +326,26 @@ class HeapFile<T> where T:IRecord<T>, new()
         return address;
     }
 
+    /// <summary>
+    /// returns string of heap file attributes in csv format
+    /// </summary>
+    /// <returns></returns>
     public string GetHeader() {
         return "FIRSTEMPTY,FIRSTPARTLYEMPTY,SIZE";
     }
     
+    /// <summary>
+    /// returns string of heap file attributes in csv format
+    /// </summary>
+    /// <returns></returns>
     public string GetBody() {
         return $"{_firstEmpty},{_firstPartlyEmpty},{_size}";
     }
 
+    /// <summary>
+    /// loads attributes data from file
+    /// </summary>
+    /// <param name="body"></param>
     public void Load(string body) {
         string[] parts = body.Split(',');
         _firstEmpty = int.Parse(parts[0]);
@@ -284,6 +353,9 @@ class HeapFile<T> where T:IRecord<T>, new()
         _size = int.Parse(parts[2]);
     }
 
+    /// <summary>
+    /// makes copy of used file
+    /// </summary>
     public void SaveState()
     {
         string savePath = _filePath + "-save";
@@ -296,6 +368,10 @@ class HeapFile<T> where T:IRecord<T>, new()
 
         Console.WriteLine($"State saved to {savePath}");
     }
+
+    /// <summary>
+    /// loads copy of used file
+    /// </summary>
 
     public void LoadState()
     {

@@ -39,6 +39,9 @@ class Block<T> where T:IRecord<T>, new()
         InitializeRecs();
     }
 
+    /// <summary>
+    /// makes all records to a full size so it can be written to file
+    /// </summary>
     public void InitializeRecs() {
         int i = 0;
         T instance = new T();
@@ -50,6 +53,9 @@ class Block<T> where T:IRecord<T>, new()
 
     }
 
+    /// <summary>
+    /// initializes Block 
+    /// </summary>
     public void Initialize() {
         _validCount = 0;
         _next = -1;
@@ -59,6 +65,10 @@ class Block<T> where T:IRecord<T>, new()
         InitializeRecs();
     }
 
+    /// <summary>
+    /// inserts item to block, and increases valid count
+    /// </summary>
+    /// <param name="item"></param>
     public void Insert(T item) {
         if(_validCount >= 0 && _validCount <= _blockSize) {
             _records[_validCount] = item;
@@ -66,6 +76,12 @@ class Block<T> where T:IRecord<T>, new()
         }
     }
 
+    /// <summary>
+    /// returns item
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public T Get(T item) {
         int i = 0;
         while(i < _validCount) {
@@ -77,6 +93,10 @@ class Block<T> where T:IRecord<T>, new()
         throw new Exception($"This item {item.ToString} does not exist on address {_address}");
     }
 
+    /// <summary>
+    /// removes item from block and decreases valid count
+    /// </summary>
+    /// <param name="item"></param>
     public void Remove(T item) {
         int index = 0;
         while(index < _validCount) {
@@ -89,6 +109,10 @@ class Block<T> where T:IRecord<T>, new()
         }
     }
 
+    /// <summary>
+    /// returns size of block
+    /// </summary>
+    /// <returns></returns>
     public int GetSize() {
         /*
         int recordSize = _blockSize * _records[0].GetSize();
@@ -116,6 +140,10 @@ class Block<T> where T:IRecord<T>, new()
         _records[_validCount -1] = tmp;
     }
 
+    /// <summary>
+    /// returns all attributes and records in byte[]
+    /// </summary>
+    /// <returns></returns>
     public byte[] GetByteArray() {
         using (var memoryStream = new MemoryStream())
         {
@@ -141,6 +169,10 @@ class Block<T> where T:IRecord<T>, new()
         }
     }
 
+    /// <summary>
+    /// initializes all attributes and records from byte[]
+    /// </summary>
+    /// <returns></returns>
     public void FromByteArray(byte[] bytes) {
         using (var memoryStream = new MemoryStream(bytes))
         {

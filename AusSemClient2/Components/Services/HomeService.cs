@@ -30,6 +30,14 @@ class HomeService
         _customersByEcv = new ExtendibleHash<CustomerByEcv>(500, customerByEcv.CreateInstance(), "CustomerByEcv");
     }
 
+    /// <summary>
+    /// adds new customer
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="ecv"></param>
+    /// <param name="name"></param>
+    /// <param name="lastName"></param>
+    /// <returns></returns>
     public string Add(int id, string ecv, string name, string lastName) {
         long address = -1;
 
@@ -55,6 +63,11 @@ class HomeService
 
     }
 
+    /// <summary>
+    /// finds address of customer by id in extendible hash and than finds customer in heap file with this address
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public Customer? FindById(int id) {
         _customerByIdFind.Id = id;
         CustomerById customerByIdFound = _customersById.Find(_customerByIdFind);
@@ -76,6 +89,11 @@ class HomeService
 
     }
 
+    /// <summary>
+    /// finds address of customer by ecv in extendible hash and than finds customer in heap file with this address
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public Customer? FindByEcv(string ecv) {
         _customerByEcvFind.Ecv = ecv;
         CustomerByEcv customerByEcvFound = _customersByEcv.Find(_customerByEcvFind);
@@ -97,6 +115,10 @@ class HomeService
 
     }
 
+    /// <summary>
+    /// updates given customer
+    /// </summary>
+    /// <param name="customer"></param>
     public void UpdateCustomer(Customer customer) {
         _customerByIdFind.Id = customer.Id;
         CustomerById customerByIdFound = _customersById.Find(_customerByIdFind);
